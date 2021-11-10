@@ -59,6 +59,12 @@ class RandomFacts
 
   }
 
+  /**
+   * ----------------------------------------------------------------------------------------------------------------
+   * Checks if a fact has already been printed or not.
+   * @param {string} fact
+   * @return {string} newfact
+   */
   async _CheckFactRecursively (fact) {
     let f = GetColumnDataByHeader(SHEETS.main, "Random Fact")
     let factColumn = f.filter(Boolean);
@@ -79,6 +85,18 @@ class RandomFacts
     }
   }
 
+  /**
+   * ----------------------------------------------------------------------------------------------------------------
+   * Loops through and prints some number of facts.
+   * @param {number} count
+   * @return {string} facts
+   */
+  async ShowMeTheMoney (count) {
+    for(let i = 0; i < count; i++) {
+      await this.UselessFact();
+    }
+  }
+
   
 }
 
@@ -87,12 +105,8 @@ class RandomFacts
  * Test Useless Fact Generator
  */
 const _testUselessness = async () => await new RandomFacts().UselessFact();
-
-
-const _testRecursion = async () => {
-  let f = await new RandomFacts()._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
-
-}
+const _testUselessnessAgain = async () => await new RandomFacts().ShowMeTheMoney(50);
+const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
 
 
 
@@ -227,14 +241,15 @@ class FuckOffAsAService
     const params = {
       "method" : "GET",
       "contentType" : `application/json`,
+      "muteHttpExceptions" : true,
     };
     let html = await UrlFetchApp.fetch(this.root + repo, params);
     let responseCode = html.getResponseCode();
     // Logger.log(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
-      Logger.log(content);
-      return content;
+      let parsed = this.Parse(content);
+      return parsed;
     } else {
       Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
@@ -247,14 +262,15 @@ class FuckOffAsAService
     const params = {
       "method" : "GET",
       "contentType" : `application/json`,
+      "muteHttpExceptions" : true,
     };
     let html = await UrlFetchApp.fetch(this.root + repo, params);
     let responseCode = html.getResponseCode();
     // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
-      Logger.log(content);
-      return content;
+      let parsed = this.Parse(content);
+      return parsed;
     } else {
       Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
@@ -267,23 +283,53 @@ class FuckOffAsAService
       "method" : "GET",
       "headers" : { "authorization" : "basic ", "content-type" : "application/json"},
       "content-type" : "application/json",
+      "muteHttpExceptions" : true,
     };
     let html = await UrlFetchApp.fetch(this.root + repo, params);
     let responseCode = html.getResponseCode();
-    Logger.log(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+    // Logger.log(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
-      Logger.log(content);
-      Logger.log(html.getAllHeaders())
-      return content;
+      let parsed = this.Parse(content);
+      return parsed;
     } else {
       Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
     }
   }
 
+  /**
+   * Parse html content.
+   * @param {string} html
+   * @return {{}} {title : string, subtitle : string}
+   */
+  Parse (content) {
+    content = content.toString();
+    const titleStart = content.search(`<h1>`);
+    const titleEnd = content.search(`</h1>`);
+    const subStart = content.search(`<em>`);
+    const subEnd = content.search(`</em>`);
+    const title = content.substring(titleStart + 4, titleEnd);
+    const sub = content.substring(subStart + 4, subEnd);
+    Logger.log(`Title : ${title}, Subtitle : ${sub}`);
+    return {
+      title : title,
+      subtitle : sub,
+    } 
+  }
+
+
 }
 const _testFuckOff = async () => new FuckOffAsAService().GetRandom();
+
+
+
+
+
+
+
+
+
 
 
 
