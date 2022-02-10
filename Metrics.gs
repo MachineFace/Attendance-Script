@@ -19,7 +19,7 @@ class CalculateMetrics
     return new Set(iterable).size;
   }
 
-  CountEachCategoryTrained() {
+  CountEachCategoryTrained () {
     let haasCount = 0;
     let tormachCount = 0;
     let fablightCount = 0;
@@ -53,7 +53,7 @@ class CalculateMetrics
     }
   }
 
-  CountPresent() {
+  CountPresent () {
     // Count totals
     let total = 0;
     let cleaned = this.enteredColumn.filter(Boolean);
@@ -64,7 +64,7 @@ class CalculateMetrics
     SHEETS.metrics.getRange('E8').setValue(total);
   }
 
-  CountAbsent() {
+  CountAbsent () {
     // Count totals
     let absent = 0;
     this.absentColumn.forEach(absentee => {
@@ -74,7 +74,7 @@ class CalculateMetrics
     SHEETS.metrics.getRange('E9').setValue(absent);
   }
 
-  CountAllTrainedUsers() {
+  CountAllTrainedUsers () {
     let students = [];
     const cleaned = this.students.filter(Boolean);
     cleaned.forEach((student, index) => {
@@ -84,7 +84,7 @@ class CalculateMetrics
     this.writer.Info(`Total Students Trained : ${unique}`);
   }
 
-  CalculateDistribution() {
+  CalculateDistribution () {
     let types = SHEETS.main.getRange(2, 2, SHEETS.main.getLastRow(), 1).getValues();
     types = [].concat(...types);
     let culledTypes = types.filter(Boolean);
@@ -103,6 +103,20 @@ class CalculateMetrics
     this.writer.Info(`Distribution ----> ${items}`);
     return items;  
   }
+
+  SumCategories () {
+    let count = {};
+    let types = [].concat(...this.trainingType).filter(Boolean);
+
+    let countFunc = (keys) => {
+      count[keys] = ++count[keys] || 1;
+    }
+    types.forEach(countFunc);
+    for(const [key, value] of Object.entries(count)) {
+      console.warn(`${key} : ${value}`);
+    }
+    return count;
+  }
 }
 
 
@@ -115,7 +129,10 @@ const _testCalc = () => {
   calc.CalculateDistribution();
 }
 
-
+const _t = () => {
+  const c = new CalculateMetrics();
+  c.SumCategories();
+}
 
 
 

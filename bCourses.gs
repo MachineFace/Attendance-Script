@@ -109,7 +109,7 @@ class BCourses
     const html = await UrlFetchApp.fetch(address, params);
     const responseCode = html.getResponseCode();
     this.writer.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
-    Logger.log(html.getContentText())
+    this.writer.Info(html.getContentText())
     if(responseCode < 400) {
       this.writer.Info(`Response ---> : ${JSON.stringify(html.getContentText())}`);
     }

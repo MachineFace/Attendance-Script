@@ -71,6 +71,20 @@ const RESPONSECODES = {
 	599 : `Network connect timeout error`,
 }
 
+const COLORS = {
+  unset : null,
+  fontGreen : '#38761d',
+  cellGreen : '#d9ead3',
+  fontOrange : '#ff9900',
+  cellOrange : '#fce5cd',
+  fontYellow : '#f1c232',
+  cellYellow : '#fff2cc',
+  fontRed : '#ff0000',
+  cellRed : '#e6b8af',
+  fontGrey : '#999999',
+  cellGrey : '#efefef',
+}
+
 const TYPES = {
   haas : 'Haas Mini Mill',
   tormach : 'Tormach',

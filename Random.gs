@@ -24,10 +24,10 @@ class RandomFacts
     // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = JSON.parse(html.getContentText())["text"];
-      Logger.log(content);
+      console.info(content);
       return content;
     } else {
-      Logger.log('Failed to Do Dat');
+      console.error('Failed to Do Dat');
       return false;
     }
   }
@@ -42,17 +42,17 @@ class RandomFacts
     const entered = GetColumnDataByHeader(SHEETS.main, "Entered in bCourses");
     let f = GetColumnDataByHeader(SHEETS.main, "Random Fact")
     let factColumn = f.filter(Boolean);
-    Logger.log(`${present.length}, ${online.length}, ${entered.length}`);
+    console.info(`${present.length}, ${online.length}, ${entered.length}`);
     
     for(let i = 0; i < present.length; i++) {
       if(present[i] == true && online[i] == true && entered[i] == true) {
         let fact = await this.UselessFact();
         if(factColumn.indexOf(fact) == -1) {
-          Logger.log(fact)
+          console.info(fact)
           SetByHeader(SHEETS.main, "Random Fact", i + 2, fact);
         } else {
           fact = await this.UselessFact();
-          Logger.log(`Trying again : ${fact}`)
+          console.info(`Trying again : ${fact}`)
         }
       }
     }
@@ -73,14 +73,14 @@ class RandomFacts
     let count = 0;
     let newFact;
     if(index == -1 && count < limit) {
-      Logger.log(count)
+      console.info(count)
       return newFact;
     } else {
       newFact = await this.UselessFact();
       count++;
-      Logger.log(count)
+      console.info(count)
       this._CheckFactRecursively(newFact);
-      Logger.log(index)
+      console.info(index)
       return newFact;
     }
   }
@@ -245,13 +245,13 @@ class FuckOffAsAService
     };
     let html = await UrlFetchApp.fetch(this.root + repo, params);
     let responseCode = html.getResponseCode();
-    // Logger.log(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+    // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
       let parsed = this.Parse(content);
       return parsed;
     } else {
-      Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
+      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
     }
   }
@@ -272,7 +272,7 @@ class FuckOffAsAService
       let parsed = this.Parse(content);
       return parsed;
     } else {
-      Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
+      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
     }
   }
@@ -287,13 +287,13 @@ class FuckOffAsAService
     };
     let html = await UrlFetchApp.fetch(this.root + repo, params);
     let responseCode = html.getResponseCode();
-    // Logger.log(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+    // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
       let parsed = this.Parse(content);
       return parsed;
     } else {
-      Logger.log(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
+      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
       return false;
     }
   }
@@ -311,7 +311,7 @@ class FuckOffAsAService
     const subEnd = content.search(`</em>`);
     const title = content.substring(titleStart + 4, titleEnd);
     const sub = content.substring(subStart + 4, subEnd);
-    Logger.log(`Title : ${title}, Subtitle : ${sub}`);
+    console.info(`Title : ${title}, Subtitle : ${sub}`);
     return {
       title : title,
       subtitle : sub,
