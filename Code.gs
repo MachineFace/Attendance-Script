@@ -12,14 +12,10 @@ const OnEdit = async (e) => {
   const thisRow = e.range.getRow();
   
   // Ignore Edits on background sheets
-  const thisSheetName = ss.getSheetName();
-  switch (thisSheetName) {
-    case "Data / Metrics":
-    case 'Chart1':
-    case 'Haas Usage':
-    case 'Logger':
-      return;     
-  }
+  Object.values(OTHERSHEETS).forEach(noGoSheet => {
+    if(SpreadsheetApp.getActiveSpreadsheet().getSheetName() == noGoSheet.getSheetName()) return;
+  })
+
   if(thisRow == 1) return;
 
   // STATUS CHANGE TRIGGER
@@ -37,7 +33,7 @@ const OnEdit = async (e) => {
     .newDataValidation()
     .requireValueInList(Object.values(TYPES), true)
     .build();
-  SHEETS.main.getRange(thisRow, 2).setDataValidation(rule);
+  SHEETS.Main.getRange(thisRow, 2).setDataValidation(rule);
   
   // True false validation
   const setCheckbox = SpreadsheetApp
@@ -47,28 +43,32 @@ const OnEdit = async (e) => {
 
   // Loop through cols 4 to 7 and set validation to checkbox
   for(let i = 4; i <= 7; i++) {
-    SHEETS.main.getRange(thisRow, i).setDataValidation(setCheckbox);
+    SHEETS.Main.getRange(thisRow, i).setDataValidation(setCheckbox);
   }
   
   // Set Date
-  SHEETS.main.getRange(thisRow, 1).setValue(new Date());
+  SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date());
 
   // Parse Row
-  const studentName = GetByHeader(SHEETS.main, "Student Name", thisRow);
-  const present = GetByHeader(SHEETS.main, "Present", thisRow);
-  const online = GetByHeader(SHEETS.main, "Online", thisRow);
-  const entered = GetByHeader(SHEETS.main, "Entered in bCourses", thisRow);
-  
+  const studentName = GetByHeader(SHEETS.Main, HEADERNAMES.name, thisRow);
+  const present = GetByHeader(SHEETS.Main, HEADERNAMES.present, thisRow);
+  const online = GetByHeader(SHEETS.Main, HEADERNAMES.online, thisRow);
+  const entered = GetByHeader(SHEETS.Main, HEADERNAMES.bCourses, thisRow);
+  const absent = GetByHeader(SHEETS.Main, HEADERNAMES.absent, thisRow);
   
   // Color Rows
   const colorer = new Colorer({thisRow : thisRow}).SetColor();
 
   // Add a Random Fact
   if(studentName != null && present == true && online == true && entered == true) {
-    SetByHeader(SHEETS.main, "Random Fact", thisRow, await new RandomFacts().UselessFact());
+    SetByHeader(SHEETS.Main, "Random Fact", thisRow, await new RandomFacts().UselessFact());
+  } else if(studentName != null && absent == true) {
+    SetByHeader(SHEETS.Main, `Fuck Off As A Service`, thisRow, await new FuckOffAsAService({name : studentName}).GetRandom());
   } else {
-    SetByHeader(SHEETS.main, "Random Fact", thisRow, "");
+    SetByHeader(SHEETS.Main, "Random Fact", thisRow, "");
+    SetByHeader(SHEETS.Main, `Fuck Off As A Service`, thisRow, "");
   }
+
   
   
   // Run Metrics

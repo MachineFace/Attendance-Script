@@ -93,8 +93,25 @@ const TYPES = {
   laser : 'Laser Cutter',
 }
 
+const HEADERNAMES = {
+  date : `Date`,
+  equipment :	`Equipment`,
+  name : `Student Name`,
+  present :	`Present`,
+  online : `Online`,
+  bCourses : `Entered in bCourses`,
+  absent : `Absent`,
+  random : `Random Fact`,
+  fuckOff :	`Fuck Off As A Service`,		
+}
+
 const SHEETS = {
-  main : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1'), 
-  metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
-  logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
+  Main : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1'), 
+}
+
+const OTHERSHEETS = {
+  Metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
+  Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
+  HaasUsage : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Haas Usage`),
+  Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
 }

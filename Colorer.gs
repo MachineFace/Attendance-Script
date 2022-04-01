@@ -13,11 +13,11 @@ class Colorer
   
 
   SetColor() {
-    const wholerow = SHEETS.main.getRange(this.thisRow, 1, 1, SHEETS.main.getLastColumn());
-    const present = GetByHeader(SHEETS.main, "Present", this.thisRow);
-    const online = GetByHeader(SHEETS.main, "Online", this.thisRow);
-    const entered = GetByHeader(SHEETS.main, "Entered in bCourses", this.thisRow);
-    const absent = GetByHeader(SHEETS.main, "Absent", this.thisRow);
+    const wholerow = SHEETS.Main.getRange(this.thisRow, 1, 1, SHEETS.Main.getLastColumn());
+    const present = GetByHeader(SHEETS.Main, HEADERNAMES.present, this.thisRow);
+    const online = GetByHeader(SHEETS.Main, HEADERNAMES.online, this.thisRow);
+    const entered = GetByHeader(SHEETS.Main, HEADERNAMES.bCourses, this.thisRow);
+    const absent = GetByHeader(SHEETS.Main, HEADERNAMES.absent, this.thisRow);
 
     try {
       if(present == true && online == true && entered == true) {
@@ -61,7 +61,7 @@ class Colorer
         this.writer.Info(`Set Color to ${COLORS.fontRed}`);
       }
       else if(absent == true) {
-        SHEETS.main.getRange(this.thisRow, 4).setValue("FALSE");
+        SHEETS.Main.getRange(this.thisRow, 4).setValue("FALSE");
         wholerow
           .setFontColor(COLORS.unset) 
           .setFontColor(COLORS.fontGrey) 

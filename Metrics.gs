@@ -6,12 +6,12 @@
 class CalculateMetrics
 {
   constructor() {
-    this.trainingType = GetColumnDataByHeader(SHEETS.main, "Equipment")
-    this.students = GetColumnDataByHeader(SHEETS.main, "Student Name")
-    this.presentColumn = GetColumnDataByHeader(SHEETS.main, "Present")
-    this.onlineColumn = GetColumnDataByHeader(SHEETS.main, "Online")
-    this.enteredColumn = GetColumnDataByHeader(SHEETS.main, "Entered in bCourses")
-    this.absentColumn = GetColumnDataByHeader(SHEETS.main, "Absent")
+    this.trainingType = GetColumnDataByHeader(SHEETS.Main, "Equipment")
+    this.students = GetColumnDataByHeader(SHEETS.Main, "Student Name")
+    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, "Present")
+    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, "Online")
+    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, "Entered in bCourses")
+    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, "Absent")
     this.writer = new WriteLogger();
   }
 
@@ -39,11 +39,11 @@ class CalculateMetrics
     this.writer.Info(`Laser Count : ${laserCount}`);
 
     // Write to Sheet
-    SHEETS.metrics.getRange('E3').setValue(haasCount);
-    SHEETS.metrics.getRange('E4').setValue(ultimakerCount);
-    SHEETS.metrics.getRange('E5').setValue(tormachCount);
-    SHEETS.metrics.getRange('E6').setValue(fablightCount);
-    SHEETS.metrics.getRange('E7').setValue(laserCount);
+    OTHERSHEETS.Metrics.getRange('E3').setValue(haasCount);
+    OTHERSHEETS.Metrics.getRange('E4').setValue(ultimakerCount);
+    OTHERSHEETS.Metrics.getRange('E5').setValue(tormachCount);
+    OTHERSHEETS.Metrics.getRange('E6').setValue(fablightCount);
+    OTHERSHEETS.Metrics.getRange('E7').setValue(laserCount);
     return {
       haas : haasCount, 
       tormach : tormachCount,
@@ -61,7 +61,7 @@ class CalculateMetrics
       if(entry == true) total++
     });
     this.writer.Info(`Total Trained : ${total}`);
-    SHEETS.metrics.getRange('E8').setValue(total);
+    OTHERSHEETS.Metrics.getRange('E8').setValue(total);
   }
 
   CountAbsent () {
@@ -71,7 +71,7 @@ class CalculateMetrics
       if(absentee == true) absent++
     });  
     this.writer.Info(`Total Absent : ${absent}`);
-    SHEETS.metrics.getRange('E9').setValue(absent);
+    OTHERSHEETS.Metrics.getRange('E9').setValue(absent);
   }
 
   CountAllTrainedUsers () {
@@ -85,7 +85,7 @@ class CalculateMetrics
   }
 
   CalculateDistribution () {
-    let types = SHEETS.main.getRange(2, 2, SHEETS.main.getLastRow(), 1).getValues();
+    let types = SHEETS.Main.getRange(2, 2, SHEETS.Main.getLastRow(), 1).getValues();
     types = [].concat(...types);
     let culledTypes = types.filter(Boolean);
     

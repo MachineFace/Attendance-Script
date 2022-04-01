@@ -37,10 +37,10 @@ class RandomFacts
    * Fill the sheet
    */
   async LoopAndFill () {
-    const present = GetColumnDataByHeader(SHEETS.main, "Present");
-    const online = GetColumnDataByHeader(SHEETS.main, "Online");
-    const entered = GetColumnDataByHeader(SHEETS.main, "Entered in bCourses");
-    let f = GetColumnDataByHeader(SHEETS.main, "Random Fact")
+    const present = GetColumnDataByHeader(SHEETS.Main, "Present");
+    const online = GetColumnDataByHeader(SHEETS.Main, "Online");
+    const entered = GetColumnDataByHeader(SHEETS.Main, "Entered in bCourses");
+    let f = GetColumnDataByHeader(SHEETS.Main, "Random Fact")
     let factColumn = f.filter(Boolean);
     console.info(`${present.length}, ${online.length}, ${entered.length}`);
     
@@ -49,7 +49,7 @@ class RandomFacts
         let fact = await this.UselessFact();
         if(factColumn.indexOf(fact) == -1) {
           console.info(fact)
-          SetByHeader(SHEETS.main, "Random Fact", i + 2, fact);
+          SetByHeader(SHEETS.Main, "Random Fact", i + 2, fact);
         } else {
           fact = await this.UselessFact();
           console.info(`Trying again : ${fact}`)
@@ -66,7 +66,7 @@ class RandomFacts
    * @return {string} newfact
    */
   async _CheckFactRecursively (fact) {
-    let f = GetColumnDataByHeader(SHEETS.main, "Random Fact")
+    let f = GetColumnDataByHeader(SHEETS.Main, "Random Fact")
     let factColumn = f.filter(Boolean);
     const index = factColumn.indexOf(fact);
     const limit = 10;
@@ -106,6 +106,11 @@ class RandomFacts
  */
 const _testUselessness = async () => await new RandomFacts().UselessFact();
 const _testUselessnessAgain = async () => await new RandomFacts().ShowMeTheMoney(50);
+const _testUselessLoop = async () => {
+  for(let i = 0; i < 50; i++) {
+    await new RandomFacts().UselessFact();
+  }
+}
 const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
 
 
@@ -118,13 +123,19 @@ const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively
  */
 class FuckOffAsAService
 {
-  constructor() {
+  constructor({
+    username = `Some User`,
+    name = `Some Name`,
+    company = `Some Company`,
+    tool = `Some Tool`,
+    something = `Something`,
+  }) {
     this.root = `http://foaas.com`;
-    this.username = `Mike\ Dingus`;
-    this.name = `Mike`;
-    this.company = `Somecompany`;
-    this.tool = `a Chainsaw`;
-    this.something = `Something`;
+    this.username = username ? username : `Some Username`;
+    this.name = name ? name : `Some Name`;
+    this.company = company;
+    this.tool = tool;
+    this.something = something;
     this.reference = `http://google.com`;
     this.endpoints = this.Endpoints();
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
@@ -290,7 +301,7 @@ class FuckOffAsAService
     // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
-      let parsed = this.Parse(content);
+      let parsed = this.Parse(content).title;
       return parsed;
     } else {
       console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
@@ -311,7 +322,7 @@ class FuckOffAsAService
     const subEnd = content.search(`</em>`);
     const title = content.substring(titleStart + 4, titleEnd);
     const sub = content.substring(subStart + 4, subEnd);
-    console.info(`Title : ${title}, Subtitle : ${sub}`);
+    // console.info(`Title : ${title}, Subtitle : ${sub}`);
     return {
       title : title,
       subtitle : sub,
@@ -320,9 +331,22 @@ class FuckOffAsAService
 
 
 }
-const _testFuckOff = async () => new FuckOffAsAService().GetRandom();
+
+const _testFuckOff = async () => console.warn(await new FuckOffAsAService({name : `Jah`}).GetRandom());
 
 
+
+const DoFuckOff = async () => {
+  const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
+  const absentIndexes = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
+  for(let i = 0; i < absentIndexes.length; i++) {
+    console.info(`Index: ${i + 2}, Item: ${absentIndexes[i]}`);
+    if(absentIndexes[i] == true) {
+      const fuckoff = await new FuckOffAsAService({ name : names[i] }).GetRandom();
+      SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, i + 2, fuckoff);
+    }
+  }
+}
 
 
 
