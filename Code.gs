@@ -28,23 +28,7 @@ const OnEdit = async (e) => {
     return;
   }
   
-  // Set up types of training via Validation
-  const rule = SpreadsheetApp
-    .newDataValidation()
-    .requireValueInList(Object.values(TYPES), true)
-    .build();
-  SHEETS.Main.getRange(thisRow, 2).setDataValidation(rule);
   
-  // True false validation
-  const setCheckbox = SpreadsheetApp
-    .newDataValidation()
-    .requireCheckbox()
-    .build();
-
-  // Loop through cols 4 to 7 and set validation to checkbox
-  for(let i = 4; i <= 7; i++) {
-    SHEETS.Main.getRange(thisRow, i).setDataValidation(setCheckbox);
-  }
   
   // Set Date
   SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date());
@@ -56,27 +40,17 @@ const OnEdit = async (e) => {
   const entered = GetByHeader(SHEETS.Main, HEADERNAMES.bCourses, thisRow);
   const absent = GetByHeader(SHEETS.Main, HEADERNAMES.absent, thisRow);
   
-  // Color Rows
-  const colorer = new Colorer({thisRow : thisRow}).SetColor();
-
   // Add a Random Fact
   if(studentName != null && present == true && online == true && entered == true) {
-    SetByHeader(SHEETS.Main, "Random Fact", thisRow, await new RandomFacts().UselessFact());
+    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new RandomFacts().UselessFact());
   } else if(studentName != null && absent == true) {
-    SetByHeader(SHEETS.Main, `Fuck Off As A Service`, thisRow, await new FuckOffAsAService({name : studentName}).GetRandom());
+    SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, thisRow, await new FuckOffAsAService({name : studentName}).GetRandom());
   } else {
-    SetByHeader(SHEETS.Main, "Random Fact", thisRow, "");
-    SetByHeader(SHEETS.Main, `Fuck Off As A Service`, thisRow, "");
+    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, "");
+    SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, thisRow, "");
   }
 
   
-  
-  // Run Metrics
-  const calc = new CalculateMetrics();
-  calc.CountPresent();
-  calc.CountAbsent();
-  calc.CountAllTrainedUsers();
-  calc.CountEachCategoryTrained();
 }
 
 

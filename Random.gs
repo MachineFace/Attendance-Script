@@ -2,7 +2,14 @@
 class RandomFacts
 {
   constructor() {
-    
+    this.repo = `https://uselessfacts.jsph.pl/random.json?language=en`;
+    this.params = {
+      method : "GET",
+      headers : { "Authorization" : "Basic ", },
+      contentType : "application/json",
+      followRedirects : true,
+      muteHttpExceptions : true
+    };
   }
 
   /**
@@ -11,15 +18,9 @@ class RandomFacts
    * @return {string} fact
    */
   async UselessFact () {
-    let repo = `https://uselessfacts.jsph.pl/random.json?language=en`;
-    const params = {
-      method : "GET",
-      headers : { "Authorization" : "Basic ", },
-      contentType : "application/json",
-      followRedirects : true,
-      muteHttpExceptions : true
-    };
-    let html = await UrlFetchApp.fetch(repo, params);
+    
+    
+    let html = await UrlFetchApp.fetch(this.repo, this.params);
     let responseCode = html.getResponseCode();
     // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
@@ -37,10 +38,10 @@ class RandomFacts
    * Fill the sheet
    */
   async LoopAndFill () {
-    const present = GetColumnDataByHeader(SHEETS.Main, "Present");
-    const online = GetColumnDataByHeader(SHEETS.Main, "Online");
-    const entered = GetColumnDataByHeader(SHEETS.Main, "Entered in bCourses");
-    let f = GetColumnDataByHeader(SHEETS.Main, "Random Fact")
+    const present = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
+    const online = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
+    const entered = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
+    let f = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
     let factColumn = f.filter(Boolean);
     console.info(`${present.length}, ${online.length}, ${entered.length}`);
     
@@ -49,7 +50,7 @@ class RandomFacts
         let fact = await this.UselessFact();
         if(factColumn.indexOf(fact) == -1) {
           console.info(fact)
-          SetByHeader(SHEETS.Main, "Random Fact", i + 2, fact);
+          SetByHeader(SHEETS.Main, HEADERNAMES.random, i + 2, fact);
         } else {
           fact = await this.UselessFact();
           console.info(`Trying again : ${fact}`)
@@ -66,7 +67,7 @@ class RandomFacts
    * @return {string} newfact
    */
   async _CheckFactRecursively (fact) {
-    let f = GetColumnDataByHeader(SHEETS.Main, "Random Fact")
+    let f = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
     let factColumn = f.filter(Boolean);
     const index = factColumn.indexOf(fact);
     const limit = 10;
@@ -124,21 +125,28 @@ const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively
 class FuckOffAsAService
 {
   constructor({
-    username = `Some User`,
-    name = `Some Name`,
-    company = `Some Company`,
-    tool = `Some Tool`,
-    something = `Something`,
+    username,
+    name,
+    company,
+    tool,
+    something,
   }) {
     this.root = `http://foaas.com`;
     this.username = username ? username : `Some Username`;
     this.name = name ? name : `Some Name`;
-    this.company = company;
-    this.tool = tool;
-    this.something = something;
+    this.company = company ? company : `Some Company`;
+    this.tool = tool ? tool : `Spatula`;
+    this.something = something ? something : `Something`;
     this.reference = `http://google.com`;
     this.endpoints = this.Endpoints();
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
+
+    this.params = {
+      "method" : "GET",
+      "headers" : { "authorization" : "basic ", "content-type" : "application/json"},
+      "content-type" : "application/json",
+      "muteHttpExceptions" : true,
+    };
   }
 
   Endpoints () {
@@ -249,12 +257,8 @@ class FuckOffAsAService
 
   async Version () {
     let repo = `/version`;
-    const params = {
-      "method" : "GET",
-      "contentType" : `application/json`,
-      "muteHttpExceptions" : true,
-    };
-    let html = await UrlFetchApp.fetch(this.root + repo, params);
+
+    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
     let responseCode = html.getResponseCode();
     // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
@@ -270,12 +274,8 @@ class FuckOffAsAService
   async GetBag () {
     let name = `Mike\ Dingus`
     let repo = `/bag/${name}`;
-    const params = {
-      "method" : "GET",
-      "contentType" : `application/json`,
-      "muteHttpExceptions" : true,
-    };
-    let html = await UrlFetchApp.fetch(this.root + repo, params);
+
+    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
     let responseCode = html.getResponseCode();
     // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
@@ -290,13 +290,8 @@ class FuckOffAsAService
 
   async GetRandom () {
     let repo = this.randomEndpoint;
-    const params = {
-      "method" : "GET",
-      "headers" : { "authorization" : "basic ", "content-type" : "application/json"},
-      "content-type" : "application/json",
-      "muteHttpExceptions" : true,
-    };
-    let html = await UrlFetchApp.fetch(this.root + repo, params);
+
+    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
     let responseCode = html.getResponseCode();
     // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {

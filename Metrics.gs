@@ -6,12 +6,12 @@
 class CalculateMetrics
 {
   constructor() {
-    this.trainingType = GetColumnDataByHeader(SHEETS.Main, "Equipment")
-    this.students = GetColumnDataByHeader(SHEETS.Main, "Student Name")
-    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, "Present")
-    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, "Online")
-    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, "Entered in bCourses")
-    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, "Absent")
+    this.trainingType = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
+    this.students = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)
+    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present)
+    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online)
+    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses)
+    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent)
     this.writer = new WriteLogger();
   }
 
@@ -85,7 +85,8 @@ class CalculateMetrics
   }
 
   CalculateDistribution () {
-    let types = SHEETS.Main.getRange(2, 2, SHEETS.Main.getLastRow(), 1).getValues();
+    
+    let types = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
     types = [].concat(...types);
     let culledTypes = types.filter(Boolean);
     
@@ -119,8 +120,11 @@ class CalculateMetrics
   }
 }
 
-
-const _testCalc = () => {
+/**
+ * Metrics
+ * @TRIGGERED - Once a day
+ */
+const Metrics = () => {
   const calc = new CalculateMetrics();
   calc.CountEachCategoryTrained();
   calc.CountPresent();

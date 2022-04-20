@@ -58,11 +58,64 @@ const SetByHeader = (sheet, columnName, row, val) => {
   } catch (err) {
     console.error(`${err} : setByHeader failed - Sheet: ${sheet} Row: ${row} Col: ${col} Value: ${val}`);
   }
-};
+}
+
+
+/**
+ * ----------------------------------------------------------------------------------------------------------------
+ * Return the values of a row by the number
+ * @param {sheet} sheet
+ * @param {number} row
+ * @returns {dict} {header, value}
+ */
+const GetRowData = (row) => {
+  let dict = {};
+  try {
+    let headers = SHEETS.Main.getRange(1, 1, 1, SHEETS.Main.getMaxColumns()).getValues()[0];
+    headers.forEach( (name, index) => {
+      headers[index] = Object.keys(HEADERNAMES).find(key => HEADERNAMES[key] === name);
+    })
+    let data = SHEETS.Main.getRange(row, 1, 1, SHEETS.Main.getMaxColumns()).getValues()[0];
+    headers.forEach( (header, index) => {
+      dict[header] = data[index];
+    });
+    dict[`sheetName`] = SHEETS.Main.getSheetName();
+    dict[`row`] = row;
+    console.info(dict);
+    return dict;
+  } catch (err) {
+    console.error(`${err} : GetRowData failed - Sheet: ${SHEETS.Main.getSheetName()} Row: ${row}`);
+  }
+}
+const _testGetRowData = () => {
+  let data = GetRowData(20);
+} 
 
 
 
 
+
+/**
+ * ----------------------------------------------------------------------------------------------------------------
+ * Set validation
+ * @TRIGGERED - Once a month
+ */
+const SetValidationRules = () => {
+  console.warn(`Setting Validation Rules......`);
+  const rule = SpreadsheetApp
+    .newDataValidation()
+    .requireValueInList(Object.values(TYPES), true)
+    .build();
+  SHEETS.Main.getRange(2, 2, SHEETS.Main.getMaxRows(), 1).setDataValidation(rule);
+  
+  // True false validation
+  const setCheckbox = SpreadsheetApp
+    .newDataValidation()
+    .requireCheckbox()
+    .build();
+  SHEETS.Main.getRange(2, 4, SHEETS.Main.getMaxRows(), 4).setDataValidation(setCheckbox);
+  console.warn(`Validation Rules Set......`);
+}
 
 
 
