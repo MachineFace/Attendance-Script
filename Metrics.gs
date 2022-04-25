@@ -62,16 +62,18 @@ class CalculateMetrics
     });
     this.writer.Info(`Total Trained : ${total}`);
     OTHERSHEETS.Metrics.getRange('E8').setValue(total);
+    return total;
   }
 
   CountAbsent () {
     // Count totals
     let absent = 0;
     this.absentColumn.forEach(absentee => {
-      if(absentee == true) absent++
+      if(absentee == true) absent++;
     });  
     this.writer.Info(`Total Absent : ${absent}`);
     OTHERSHEETS.Metrics.getRange('E9').setValue(absent);
+    return absent;
   }
 
   CountAllTrainedUsers () {
@@ -82,6 +84,7 @@ class CalculateMetrics
     })
     let unique = this._CountUnique(students);
     this.writer.Info(`Total Students Trained : ${unique}`);
+    return unique;
   }
 
   CalculateDistribution () {
@@ -135,7 +138,7 @@ const Metrics = () => {
 
 const _t = () => {
   const c = new CalculateMetrics();
-  c.SumCategories();
+  c.CountAllTrainedUsers();
 }
 
 

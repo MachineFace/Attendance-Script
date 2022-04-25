@@ -1,4 +1,6 @@
-
+/**
+ * Class for accessing "Random Fact" API for a new random fact.
+ */
 class RandomFacts
 {
   constructor() {
@@ -120,23 +122,25 @@ const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively
 
 /**
  * ----------------------------------------------------------------------------------------------------------------
- * Test Fuck Off as a Service
+ * Fuck Off as a Service
  */
 class FuckOffAsAService
 {
   constructor({
-    username,
-    name,
-    company,
-    tool,
-    something,
+    username : username = `Whatever-your-dumb-username-is`,
+    name : name = `Whatever-your-name-is`,
+    company : company = `Whatever-your-dumb-company-is`,
+    tool : tool = `Google Apps-Script`,
+    something : something = `Eat it`,
+    behavior : behavior = `Always asking questions`,
   }) {
     this.root = `http://foaas.com`;
-    this.username = username ? username : `Some Username`;
-    this.name = name ? name : `Some Name`;
-    this.company = company ? company : `Some Company`;
+    this.username = username ? username : `Whatever-your-dumb-username-is`;
+    this.name = name ? name : `Whatever-your-name-is`;
+    this.company = company ? company : `Whatever-your-dumb-company-is`;
     this.tool = tool ? tool : `Spatula`;
-    this.something = something ? something : `Something`;
+    this.something = something ? something : `Eat it`;
+    this.behavior = behavior ;
     this.reference = `http://google.com`;
     this.endpoints = this.Endpoints();
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
@@ -151,8 +155,6 @@ class FuckOffAsAService
 
   Endpoints () {
     return [
-      `/version`,
-      `/operations`,
       `/absolutely/${this.company}/${this.username}`,
       `/anyway/${this.company}/${this.username}`,
       `/asshole/${this.username}`,
@@ -176,7 +178,7 @@ class FuckOffAsAService
       `/deraadt/${this.name}/${this.username}`,
       `/diabetes/${this.username}`,
       `/donut/${this.name}/${this.username}`,
-      `/dosomething/:do/${this.something}/${this.username}`,
+      `/dosomething/run/${this.something}/${this.username}`,
       `/dumbledore/${this.username}`,
       `/dalton/${this.name}/${this.username}`,
       `/equity/${this.name}/${this.username}`,
@@ -192,7 +194,7 @@ class FuckOffAsAService
       `/fyyff/${this.username}`,
       `/gfy/${this.name}/${this.username}`,
       `/give/${this.username}`,
-      `/greed/:noun/${this.username}`,
+      `/greed/jerk/${this.username}`,
       `/holygrail/${this.username}`,
       `/family/${this.username}`,
       `/horse/${this.username}`,
@@ -201,7 +203,7 @@ class FuckOffAsAService
       `/ing/${this.name}/${this.username}`,
       `/jinglebells/${this.username}`,
       `/keep/${this.name}/${this.username}`,
-      `/keepcalm/:reaction/${this.username}`,
+      `/keepcalm/facepalm/${this.username}`,
       `/king/${this.name}/${this.username}`,
       `/legend/${this.name}/${this.username}`,
       `/life/${this.username}`,
@@ -217,13 +219,13 @@ class FuckOffAsAService
       `/no/${this.username}`,
       `/nugget/${this.name}/${this.username}`,
       `/off/${this.name}/${this.username}`,
-      `/off-with/:behavior/${this.username}`,
+      `/off-with/${this.behavior}/${this.username}`,
       `/outside/${this.name}/${this.username}`,
-      `/particular/:thing/${this.username}`,
+      `/particular/${this.something}/${this.username}`,
       `/pink/${this.username}`,
       `/problem/${this.name}/${this.username}`,
       `/programmer/${this.username}`,
-      `/pulp/:language/${this.username}`,
+      `/pulp/Javascript/${this.username}`,
       `/question/${this.username}`,
       `/ratsarse/${this.username}`,
       `/retard/${this.username}`,
@@ -328,7 +330,12 @@ class FuckOffAsAService
 }
 
 const _testFuckOff = async () => console.warn(await new FuckOffAsAService({name : `Jah`}).GetRandom());
-
+const _testFuckOffMass = async () => {
+  for(let i = 0; i < 50; i++) {
+    const f = new FuckOffAsAService({name : `Ding Dong`});
+    console.warn(await f.GetRandom());
+  }
+}
 
 
 const DoFuckOff = async () => {

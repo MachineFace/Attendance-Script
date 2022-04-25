@@ -1,7 +1,7 @@
 /**
  * MAIN ENTRY POINT
  */
-const OnEdit = async (e) => {
+const OnChange = async (e) => {
   const writer = new WriteLogger();
   
   // Fetch Data from Sheets

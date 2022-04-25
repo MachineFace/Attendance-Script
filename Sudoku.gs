@@ -94,7 +94,23 @@ const _testSudoku = () => {
     [0, 0, 7, 0, 4, 0, 2, 0, 3,],
   ]; 
   console.info(testBoard);
-  const solver = new SudokuSolver({board : testBoard});
+  new SudokuSolver({board : testBoard});
+  console.warn(`=======================================`)
+  const testBoard2 = [
+    [3, 0, 0, 6, 5, 0, 0, 0, 0,],
+    [4, 5, 0, 9, 0, 7, 0, 0, 0,],
+    [7, 8, 0, 4, 3, 2, 5, 1, 0,],
+    [0, 0, 3, 2, 9, 6, 0, 0, 0,],
+    [0, 0, 7, 5, 8, 0, 0, 0, 3,],
+    [0, 0, 8, 7, 0, 3, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 2, 0, 1,],
+    [0, 0, 0, 1, 0, 0, 4, 6, 7,],
+    [0, 6, 1, 3, 7, 4, 8, 9, 0,],
+  ]; 
+  console.info(testBoard2);
+  new SudokuSolver({board : testBoard2});
+  console.warn(`=======================================`)
+
 }
 
 
