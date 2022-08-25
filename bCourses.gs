@@ -5,13 +5,13 @@
 class BCourses
 {
   constructor() {
-    this.token = "1072~WyQLWVWk0exa5l2Y8tpIO6ZRePrc8yrjlGpbz9NpiPag5mJv3SNTub1SA1fiLfax";
-    this.root = "https://bcourses.berkeley.edu/api/v1";
+    this.token = `1072~WyQLWVWk0exa5l2Y8tpIO6ZRePrc8yrjlGpbz9NpiPag5mJv3SNTub1SA1fiLfax`;
+    // this.root = `https://bcourses.berkeley.edu/api/v1`;
+    this.root = `https://bcourses.berkeley.edu/courses/1353091`;
     this.id = 5508592;
-    this.name = "Cody Glen";
+    this.name = `Cody Glen`;
     this.writer = new WriteLogger();
-    // this.root = "https://bcourses.berkeley.edu/courses/1353091";
-    // const repo = "/gradebook";
+    // const repo = `/gradebook`;
   }
 
   async TestPOST() {
@@ -78,15 +78,15 @@ class BCourses
 
   async Login() {
 
-    const address = `${this.root}/login/oauth2/token`;
+    const address = `${this.root}/gradebook`;
 
-    const payload = {
-      "access_token": this.token,
-      "token_type": "Bearer",
-      "grant_type" : "code",
-      "user": {"id": this.id, "name": this.name},
-      "expires_in": 3600,
-    };
+    // const payload = {
+    //   "access_token": this.token,
+    //   "token_type": "Bearer",
+    //   "grant_type" : "code",
+    //   "user": {"id": this.id, "name": this.name},
+    //   "expires_in": 3600,
+    // };
 
     // const params = {
     //   "method" : "POST",
@@ -124,8 +124,8 @@ class BCourses
 }
 
 const _testbCourses = () => {
-  const bCourses = new BCourses();
-  bCourses.Login();
+  const b = new BCourses();
+  b.Login();
 }
 
 

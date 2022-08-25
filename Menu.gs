@@ -1,90 +1,5 @@
 
 /**
- * Mark a job as abandoned and send an email to that student
- */
-/*
-const PopUpMarkAsAbandoned = async () => {
-  let ui = SpreadsheetApp.getUi(); 
-  let response = ui.prompt(`Mark Print as Abandoned`, `Scan a ticket with this cell selected and press "OK".`, ui.ButtonSet.OK_CANCEL);
-
-  // Process the user's response.
-  if (response.getSelectedButton() == ui.Button.OK) {
-    let jobnumber = response.getResponseText();
-    console.warn(`Finding ${jobnumber}`);
-    let res = FindOne(jobnumber);
-    if(res == null) {
-      progressUpdate.setValue(`Job number not found. Try again.`);
-    } else {
-      let sheet = SHEETS[res.sheetName];
-      let row = res.row;
-      let email = res.email;
-      let projectname = res.filename;
-      let material1Quantity = res.materials;
-      SetByHeader(sheet, HEADERNAMES.status, row, STATUS.abandoned.plaintext);
-      console.info(`Job number ${jobnumber} marked as abandoned. Sheet: ${sheet.getSheetName()} row: ${row}`);
-      await new Emailer({
-        email : email, 
-        status : STATUS.abandoned.plaintext,
-        projectname : projectname,
-        jobnumber : jobnumber,
-        material1Quantity : material1Quantity,
-      })
-      console.warn(`Owner ${email} of abandoned job: ${jobnumber} emailed...`);
-      ui.alert(`Marked as Abandoned`, `${email}, Job: ${jobnumber} emailed... Sheet: ${sheet.getSheetName()} row: ${row}`, ui.ButtonSet.OK);
-    }
-  } else if (response.getSelectedButton() == ui.Button.CANCEL) {
-    console.warn(`User chose not to send an email...`);
-  } else {
-    console.warn(`User cancelled.`);
-  }
-    
-}
-*/
-/**
- * Mark a job as abandoned and send an email to that student
- */
-/*
-const PopUpMarkAsPickedUp = async () => {
-  let ui = SpreadsheetApp.getUi(); 
-  let response = ui.prompt(`Mark Print as Picked Up`, `Scan a ticket with this cell selected and press "OK".`, ui.ButtonSet.OK_CANCEL);
-
-  // Process the user's response.
-  if (response.getSelectedButton() == ui.Button.OK) {
-    let jobnumber = response.getResponseText();
-    console.warn(`Finding ${jobnumber}`);
-    let res = FindOne(jobnumber);
-    if(res == null) {
-      progressUpdate.setValue(`Job number not found. Try again.`);
-    } else {
-      let sheet = SHEETS[res.sheetName];
-      let row = res.row;
-      let email = res.email;
-      SetByHeader(sheet, HEADERNAMES.status, row, STATUS.pickedUp.plaintext);
-      console.warn(`${email}, Job: ${jobnumber} marked as picked up... Sheet: ${sheet.getSheetName()} row: ${row}`);
-      ui.alert(`Marked as Picked Up`, `${email}, Job: ${jobnumber}... Sheet: ${sheet.getSheetName()} row: ${row}`, ui.ButtonSet.OK);
-    }
-  } else if (response.getSelectedButton() == ui.Button.CANCEL) {
-    console.warn(`User chose not to mark as picked up...`);
-  } else {
-    console.warn(`User cancelled.`);
-  }
-    
-}
-*/
-
-/**
- * -----------------------------------------------------------------------------------------------------------------
- * Creates a pop-up for counting users.
- */
-// const calc = new CalculateMetrics();
-//   calc.CountPresent();
-//   calc.CountAbsent();
-//   calc.CountAllTrainedUsers();
-//   calc.CalculateDistribution();
-
-
-
-/**
  * Popup Count each category Trained
  */
 const PopupCategoryTrained = async () => {
@@ -92,7 +7,7 @@ const PopupCategoryTrained = async () => {
   const calc = new CalculateMetrics();
   let counts = await calc.CountEachCategoryTrained();
   ui.alert(
-    `MachineFace Alert`,
+    `${ServiceName}`,
     `${JSON.stringify(counts)}`,
     ui.ButtonSet.OK
   );
@@ -108,7 +23,7 @@ const PopupCountAllTrainedUsers = async () => {
   let absent = await c.CountAbsent();
   let present = c.CountPresent();
   ui.alert(
-    `MachineFace Alert`,
+    `${ServiceName}`,
     `Number of Trained Users ----> ${counts}\n` + 
     `Absent ----> ${absent}\n` + 
     `Present ----> ${present}\n`,
@@ -123,7 +38,7 @@ const PopupRandomFact = async () => {
   let ui = await SpreadsheetApp.getUi();
   let fact = await new RandomFacts().UselessFact()
   ui.alert(
-    `MachineFace Alert`,
+    `${ServiceName}`,
     `${fact}`,
     ui.ButtonSet.OK
   );
@@ -136,7 +51,7 @@ const PopupFOff = async () => {
   let ui = await SpreadsheetApp.getUi();
   let fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom()
   ui.alert(
-    `MachineFace Alert`,
+    `${ServiceName}`,
     `${fOff}`,
     ui.ButtonSet.OK
   );
@@ -187,12 +102,36 @@ const BuildHTMLHELP = () => {
  */
 const PopupHelp = () => {
   let ui = SpreadsheetApp.getUi();
-  let title = "JPS Runtime HELP";
+  let title = `${ServiceName}`;
   let htmlOutput = HtmlService.createHtmlOutput(BuildHTMLHELP())
     .setWidth(640)
     .setHeight(480);
   ui.showModalDialog(htmlOutput, title);
 };
+
+/**
+ * Popup Delete Old Emails
+ */
+const PopupCleanOutJPSNotifications = async () => {
+  let ui = await SpreadsheetApp.getUi();
+  let fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
+  let response = ui.alert(
+    `${ServiceName}`,
+    `Deleting all the old JPS Notification emails....`, 
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (response == ui.Button.OK) {
+    CleanOutJPSNotifications();
+  } else if (response == ui.Button.CANCEL) {
+    ui.alert(
+      `${ServiceName}`,
+      `${fOff}`,
+      ui.ButtonSet.OK
+    )
+  } else {
+    console.warn(`User cancelled.`);
+  }
+}
 
 
 
@@ -201,17 +140,20 @@ const PopupHelp = () => {
  */
 const BarMenu = () => {
   SpreadsheetApp.getUi()
-    .createMenu(`Cody's Menu`)
-    .addItem(`Go to Main Tab`, `OpenMainTab`)
-    .addItem(`Generate Random Fact`, `PopupRandomFact`)
-    .addItem(`F-Off as a Service`, `PopupFOff`)
+    .createMenu(`${ServiceName} Menu`)
+    .addItem(`💩 Go to Main Tab`, `OpenMainTab`)
+    .addItem(`💩 Show Sidebar`, `ShowSidebar`)
+    .addItem(`💩 Generate Random Fact`, `PopupRandomFact`)
+    .addItem(`💩 Fuck Off as a Service`, `PopupFOff`)
     .addSeparator()
-    .addItem(`Count Categories Trained`, `PopupCategoryTrained`)
-    .addItem(`Count All Trained Users`, `PopupCountAllTrainedUsers`)
+    .addItem(`💩 Count Categories Trained`, `PopupCategoryTrained`)
+    .addItem(`💩 Count All Trained Users`, `PopupCountAllTrainedUsers`)
     .addSeparator()
-    .addItem(`Help`, `PopupHelp`)
+    .addItem(`💩 Help`, `PopupHelp`)
     .addSeparator()
-    .addItem(`Recompute Metrics`, `Metrics`)
+    .addItem(`💩 Recompute Metrics`, `Metrics`)
+    .addSeparator()
+    .addItem(`💩 Delete Old Emails`, `PopupCleanOutJPSNotifications`)
     .addToUi();
 };
 

@@ -113,7 +113,7 @@ const SetValidationRules = () => {
     .newDataValidation()
     .requireCheckbox()
     .build();
-  SHEETS.Main.getRange(2, 4, SHEETS.Main.getMaxRows(), 4).setDataValidation(setCheckbox);
+  SHEETS.Main.getRange(2, 4, SHEETS.Main.getLastRow(), 4).setDataValidation(setCheckbox);
   console.warn(`Validation Rules Set......`);
 }
 
