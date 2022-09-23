@@ -23,7 +23,7 @@ const ProcessForm = (formObject) => {
   console.info(`Type: ${type}, Names: ${names}`);
   let parsed = ParseStudents(names);
   parsed.forEach(name => {
-    let data = [new Date().toDateString(), type, name, false, true, false, false];
+    let data = [new Date().toLocaleDateString(), type, name, false, true, false, false];
     SHEETS.Main.appendRow(data)
   })
   const setCheckbox = SpreadsheetApp

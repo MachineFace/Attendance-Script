@@ -5,7 +5,7 @@
 class WriteLogger
 {
   constructor() { 
-    this.date = new Date().toUTCString();
+    this.date = new Date().toLocaleDateString();
     this.sheet = OTHERSHEETS.Logger;
     this.row = OTHERSHEETS.Logger.getLastRow() + 1;
     this.sheetLength = OTHERSHEETS.Logger.getMaxRows();

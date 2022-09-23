@@ -19,6 +19,22 @@ class CalculateMetrics
     return new Set(iterable).size;
   }
 
+  CountCategories () {
+    let categories = [];
+    GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
+      .filter(Boolean)
+      .forEach( type => {
+        if(Object.values(TYPES).includes(type)) categories.push(type);
+      });
+    
+
+    let occurrences = categories.reduce( (acc, curr) => {
+      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+    }, {});
+
+    return occurrences; 
+  }
+
   CountEachCategoryTrained () {
     let haasCount = 0;
     let tormachCount = 0;
@@ -136,9 +152,9 @@ const Metrics = () => {
   calc.CalculateDistribution();
 }
 
-const _t = () => {
+const _testMetrics = () => {
   const c = new CalculateMetrics();
-  c.CountAllTrainedUsers();
+  console.info(c.CountCategories());
 }
 
 

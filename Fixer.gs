@@ -40,10 +40,14 @@ const ParseStudents = (list) => {
     .replace(/\s+/g, '')
     .split(/(?=[A-Z])/)
     .filter(x => x != `Removeattendee`)
-  let nameset = [...new Set(split)];
+  // let nameset = [...new Set(split)];
   console.warn(`PRE: ${split}`);
-  let firstnames = nameset.filter((x, idx) => (idx % 2 == 0))
-  let lastnames = nameset.filter((x, idx) => (idx % 2 != 0))
+  let firstnames = split
+    .filter((x, idx) => (idx % 2 == 0))
+    .filter((x, idx) => (idx % 2 == 0))
+  let lastnames = split
+    .filter((x, idx) => (idx % 2 == 1))
+    .filter((x, idx) => (idx % 2 == 0))
   let out = [];
   firstnames.forEach( (firstname, idx) => out.push(`${firstname} ${lastnames[idx]}`));
   console.warn(out)
@@ -52,7 +56,7 @@ const ParseStudents = (list) => {
 
 
 const _testListFixer = () => {
-  let list = `Corwin Hill Remove attendee Corwin HillZixun Huang Remove attendee Zixun HuangTomas Garcia `;
+  let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
   ParseStudents(list);
 }
 
