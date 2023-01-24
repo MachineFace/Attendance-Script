@@ -12,6 +12,9 @@
  */
 const GetByHeader = (sheet, columnName, row) => {
   try {
+    if(CheckSheetIsForbidden(sheet) == true) {
+      throw new Error(`A non-sheet argument was passed to a function that requires a sheet.`);
+    }
     let data = sheet.getDataRange().getValues();
     let col = data[0].indexOf(columnName);
     if (col != -1) return data[row - 1][col];
@@ -30,6 +33,9 @@ const GetByHeader = (sheet, columnName, row) => {
  */
 const GetColumnDataByHeader = (sheet, columnName) => {
   try {
+    if(CheckSheetIsForbidden(sheet) == true) {
+      throw new Error(`A non-sheet argument was passed to a function that requires a sheet.`);
+    }
     const data = sheet.getDataRange().getValues();
     const col = data[0].indexOf(columnName);
     let colData = data.map(d => d[col]);
@@ -52,6 +58,9 @@ const GetColumnDataByHeader = (sheet, columnName) => {
  */
 const SetByHeader = (sheet, columnName, row, val) => {
   try {
+    if(CheckSheetIsForbidden(sheet) == true) {
+      throw new Error(`A non-sheet argument was passed to a function that requires a sheet.`);
+    }
     const data = sheet.getDataRange().getValues();
     const col = data[0].indexOf(columnName) + 1;
     sheet.getRange(row, col).setValue(val);
@@ -87,11 +96,32 @@ const GetRowData = (row) => {
     console.error(`${err} : GetRowData failed - Sheet: ${SHEETS.Main.getSheetName()} Row: ${row}`);
   }
 }
-const _testGetRowData = () => {
-  let data = GetRowData(20);
-} 
 
 
+
+
+/**
+ * Check if this sheet is forbidden
+ * @param {sheet} sheet to check
+ * @returns {bool} false if sheet is allowed
+ * @returns {bool} true if forbidden
+ */
+const CheckSheetIsForbidden = (someSheet) => {
+  // Check if it's even a sheet
+  if (someSheet !== Object(someSheet)) {
+    console.error(`A non-sheet argument was passed to a function that requires a sheet.`);
+    return true;
+  }
+  let forbiddenNames = Object.keys(OTHERSHEETS);
+  const index = forbiddenNames.indexOf(someSheet.getName());
+  if(index == -1 || index == undefined) {
+    console.info(`Sheet is NOT FORBIDDEN : ${someSheet.getName()}`)
+    return false;
+  } else {
+    console.error(`SHEET FORBIDDEN : ${forbiddenNames[index]}`);
+    return true;
+  }
+}
 
 
 

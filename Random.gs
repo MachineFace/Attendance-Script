@@ -103,18 +103,7 @@ class RandomFacts
   
 }
 
-/**
- * ----------------------------------------------------------------------------------------------------------------
- * Test Useless Fact Generator
- */
-const _testUselessness = async () => await new RandomFacts().UselessFact();
-const _testUselessnessAgain = async () => await new RandomFacts().ShowMeTheMoney(50);
-const _testUselessLoop = async () => {
-  for(let i = 0; i < 50; i++) {
-    await new RandomFacts().UselessFact();
-  }
-}
-const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
+
 
 
 
@@ -127,20 +116,20 @@ const _testRecursion = async () => await new RandomFacts()._CheckFactRecursively
 class FuckOffAsAService
 {
   constructor({
-    username : username = `Whatever-your-dumb-username-is`,
+    username : username = `Me`,
     name : name = `Whatever-your-name-is`,
     company : company = `Whatever-your-dumb-company-is`,
     tool : tool = `Google Apps-Script`,
     something : something = `Eat it`,
     behavior : behavior = `Always asking questions`,
   }) {
-    this.root = `http://foaas.com`;
-    this.username = username ? username : `Whatever-your-dumb-username-is`;
-    this.name = name ? name : `Whatever-your-name-is`;
-    this.company = company ? company : `Whatever-your-dumb-company-is`;
-    this.tool = tool ? tool : `Spatula`;
-    this.something = something ? something : `Eat it`;
-    this.behavior = behavior ;
+    this.root = `https://foass.1001010.com`;     // `http://foaas.com`
+    this.username = username;
+    this.name = name;
+    this.company = company;
+    this.tool = tool;
+    this.something = something;
+    this.behavior = behavior;
     this.reference = `http://google.com`;
     this.endpoints = this.Endpoints();
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
@@ -155,147 +144,38 @@ class FuckOffAsAService
 
   Endpoints () {
     return [
-      `/absolutely/${this.company}/${this.username}`,
-      `/anyway/${this.company}/${this.username}`,
-      `/asshole/${this.username}`,
-      `/awesome/${this.username}`,
-      `/back/${this.name}/${this.username}`,
-      `/bag/${this.username}`,
-      `/ballmer/${this.name}/${this.company}/${this.username}`,
-      `/bday/${this.name}/${this.username}`,
-      `/because/${this.username}`,
-      `/blackadder/${this.name}/${this.username}`,
-      `/bm/${this.name}/${this.username}`,
-      `/bucket/${this.username}`,
-      `/bus/${this.name}/${this.username}`,
-      `/bye/${this.username}`,
-      `/caniuse/${this.tool}/${this.username}`,
-      `/chainsaw/${this.name}/${this.username}`,
-      `/cocksplat/${this.name}/${this.username}`,
-      `/cool/${this.username}`,
-      `/cup/${this.username}`,
-      `/dense/${this.username}`,
-      `/deraadt/${this.name}/${this.username}`,
-      `/diabetes/${this.username}`,
-      `/donut/${this.name}/${this.username}`,
-      `/dosomething/run/${this.something}/${this.username}`,
-      `/dumbledore/${this.username}`,
-      `/dalton/${this.name}/${this.username}`,
-      `/equity/${this.name}/${this.username}`,
-      `/even/${this.username}`,
       `/everyone/${this.username}`,
-      `/everything/${this.username}`,
-      `/fascinating/${this.username}`,
-      `/fewer/${this.name}/${this.username}`,
-      `/field/${this.name}/${this.username}/${this.reference}`,
-      `/flying/${this.username}`,
-      `/ftfy/${this.username}`,
-      `/fts/${this.name}/${this.username}`,
-      `/fyyff/${this.username}`,
-      `/gfy/${this.name}/${this.username}`,
-      `/give/${this.username}`,
-      `/greed/jerk/${this.username}`,
-      `/holygrail/${this.username}`,
-      `/family/${this.username}`,
-      `/horse/${this.username}`,
-      `/idea/${this.username}`,
-      `/immensity/${this.username}`,
-      `/ing/${this.name}/${this.username}`,
-      `/jinglebells/${this.username}`,
-      `/keep/${this.name}/${this.username}`,
-      `/keepcalm/facepalm/${this.username}`,
-      `/king/${this.name}/${this.username}`,
-      `/legend/${this.name}/${this.username}`,
-      `/life/${this.username}`,
-      `/linus/${this.name}/${this.username}`,
-      `/logs/${this.username}`,
-      `/look/${this.name}/${this.username}`,
-      `/looking/${this.username}`,
-      `/lowpoly/${this.username}`,
-      `/madison/${this.name}/${this.username}`,
-      `/maybe/${this.username}`,
-      `/me/${this.username}`,
-      `/mornin/${this.username}`,
-      `/no/${this.username}`,
-      `/nugget/${this.name}/${this.username}`,
-      `/off/${this.name}/${this.username}`,
-      `/off-with/${this.behavior}/${this.username}`,
-      `/outside/${this.name}/${this.username}`,
-      `/particular/${this.something}/${this.username}`,
-      `/pink/${this.username}`,
-      `/problem/${this.name}/${this.username}`,
-      `/programmer/${this.username}`,
-      `/pulp/Javascript/${this.username}`,
-      `/question/${this.username}`,
-      `/ratsarse/${this.username}`,
-      `/retard/${this.username}`,
-      `/ridiculous/${this.username}`,
-      `/rockstar/${this.name}/${this.username}`,
-      `/rtfm/${this.username}`,
-      `/sake/${this.username}`,
-      `/shakespeare/${this.name}/${this.username}`,
-      `/shit/${this.username}`,
-      `/shutup/${this.name}/${this.username}`,
-      `/single/${this.username}`,
       `/thanks/${this.username}`,
-      `/that/${this.username}`,
-      `/think/${this.name}/${this.username}`,
-      `/thinking/${this.name}/${this.username}`,
-      `/this/${this.username}`,
-      `/thumbs/${this.name}/${this.username}`,
-      `/too/${this.username}`,
-      `/tucker/${this.username}`,
-      `/understand/${this.name}/${this.username}`,
-      `/waste/${this.name}/${this.username}`,
-      `/what/${this.username}`,
-      `/xmas/${this.name}/${this.username}`,
-      `/yeah/${this.username}`,
-      `/yoda/${this.name}/${this.username}`,
+      `/ity/${this.name}/${this.username}`,
+      `/linus/${this.name}/${this.username}`,
+      `/bag/${this.name}/${this.username}`,
+      `/pink/${this.name}`,
+      `/given/${this.name}`,
+      `/bag/${this.name}/${this.username}`,
+      `/bowl/${this.name}/${this.username}`,
+      `/everything/${this.username}`,
+      `/shakespeare/${this.name}/${this.username}`,
       `/you/${this.name}/${this.username}`,
-      `/zayn/${this.username}`,
-      `/zero/${this.username}`,
+      `/life/${this.username}`,
+      `/that/${this.username}`,
+      `/chainsaw/${this.name}/${this.username}`,
+      `/eat/${this.name}/${this.username}`,
+      `/king/${this.name}/${this.username}`,
+      `/lawn/${this.name}/${this.username}`,
+      `/off/${this.name}/${this.username}`,
+      `/this/${this.username}`,
+      `/donut/${this.name}/${this.username}`,
     ]
   }
 
-  async Version () {
-    let repo = `/version`;
 
-    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
-    let responseCode = html.getResponseCode();
-    // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
-    if (responseCode == 200 || responseCode == 201) {
-      let content = html.getContentText();
-      let parsed = this.Parse(content);
-      return parsed;
-    } else {
-      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
-      return false;
-    }
-  }
-
-  async GetBag () {
-    let name = `Mike\ Dingus`
-    let repo = `/bag/${name}`;
-
-    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
-    let responseCode = html.getResponseCode();
-    // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
-    if (responseCode == 200 || responseCode == 201) {
-      let content = html.getContentText();
-      let parsed = this.Parse(content);
-      return parsed;
-    } else {
-      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
-      return false;
-    }
-  }
 
   async GetRandom () {
     let repo = this.randomEndpoint;
 
     let html = await UrlFetchApp.fetch(this.root + repo, this.params);
     let responseCode = html.getResponseCode();
-    // console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+    console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
     if (responseCode == 200 || responseCode == 201) {
       let content = html.getContentText();
       let parsed = this.Parse(content).title;
@@ -329,14 +209,11 @@ class FuckOffAsAService
 
 }
 
-const _testFuckOff = async () => console.warn(await new FuckOffAsAService({name : `Jah`}).GetRandom());
-const _testFuckOffMass = async () => {
-  for(let i = 0; i < 50; i++) {
-    const f = new FuckOffAsAService({name : `Ding Dong`});
-    console.warn(await f.GetRandom());
-  }
-}
 
+const _testFuckOff = async () => {
+  const x = await new FuckOffAsAService({}).GetRandom();
+  console.info(x);
+}
 
 const DoFuckOff = async () => {
   const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
