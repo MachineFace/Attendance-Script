@@ -1,60 +1,3 @@
-/**
- * Test Updating with GasT
- */
-/*
-const _gasTUpdateTesting = async () => {
-  if ((typeof GasTap) === 'undefined') { 
-    eval(UrlFetchApp.fetch('https://raw.githubusercontent.com/huan/gast/master/src/gas-tap-lib.js').getContentText())
-  } 
-  const test = new GasTap();
-  
-  await test(`WriteAllNewDataToSheets`, t => {
-    const x = WriteAllNewDataToSheets();
-    t.notThrow(() => x,`WriteAllNewDataToSheets SHOULD NOT throw error.`);
-  });
-
-  await test(`UpdateAll`, t => {
-    const x = UpdateAll();
-    t.notThrow(() => x,`UpdateAll SHOULD NOT throw error.`);
-  });
-
-  await test(`MissingTicketUpdater`, t => {
-    const x = MissingTicketUpdater();
-    t.notThrow(() => x,`MissingTicketUpdater SHOULD NOT throw error.`);
-  });
-
-  await test(`FetchNewDataforSingleSheet`, t => {
-    const x = FetchNewDataforSingleSheet(SHEETS.Zardoz);
-    t.notThrow(() => x,`FetchNewDataforSingleSheet SHOULD NOT throw error.`);
-  });
-
-  await test(`TriggerRemoveDuplicates`, t => {
-    const x = TriggerRemoveDuplicates();
-    t.notThrow(() => x,`TriggerRemoveDuplicates SHOULD NOT throw error.`);
-  });   
-
-  await test(`Filename Cleanup`, t => {
-    const s = {
-      good : `somename1.gcode`,
-      mod : `somename.modified.gcode`,
-      bad : `@#$%.exe&*()`,
-      worse : `\n\n\n\n\n\n`,
-    }
-    const x = FileNameCleanup(s.good);
-    t.equal(x, `Somename`, `Pre: ${s.good}, Post: Assert ${x} = Somename`);
-    const y = FileNameCleanup(s.bad);
-    t.equal(y, `@#$%.exe&*()`, `Pre: ${s.bad}, Post: Assert ${y} = @#$%.exe&*()`);
-    const z = FileNameCleanup(s.worse);
-    t.equal(z, `\n\n\n\n\n\n`, `Pre: ${s.bad}, Post: Assert ${z} = 6 returns`);
-    const a = FileNameCleanup(s.mod);
-    t.equal(a, `Somename`, `Pre: ${s.mod}, Post: Assert ${a} = Somename`);
-  });
-
-  await test.finish();
-  if (test.totalFailed() > 0) throw "Some test(s) failed!";
-}
-*/
-
 
 
 /**
@@ -229,6 +172,35 @@ const _gasTRandomFunTesting = async () => {
 
 
 
+/**
+ * Test Fun Stuff with GasT
+ */
+const _gasTEmailerTesting = async () => {
+  if ((typeof GasTap) === 'undefined') { 
+    eval(UrlFetchApp.fetch('https://raw.githubusercontent.com/huan/gast/master/src/gas-tap-lib.js').getContentText())
+  } 
+  const test = new GasTap();
+
+  await test(`CountTotalEmailsSent`, (t) => {
+    const x = CountTotalEmailsSent();
+    t.notEqual(x, undefined || null, `CountTotalEmailsSent SHOULD NOT return undefined or null: ${x}`);
+    t.equal(typeof x, typeof Promise.prototype, `CountTotalEmailsSent SHOULD return type of Promise: ${typeof x}`);
+  });
+
+  await test(`ListInboxSnippets`, (t) => {
+    const x = ListInboxSnippets();
+    t.notThrow(() => x, `ListInboxSnippets SHOULD NOT throw error: ${x}`);
+  });
+
+  await test(`CleanOutJPSNotifications`, (t) => {
+    const x = CleanOutJPSNotifications();
+    t.notThrow(() => x, `CleanOutJPSNotifications SHOULD NOT throw error: ${x}`);
+  });
+
+  await test.finish();
+  if (test.totalFailed() > 0) throw "Some test(s) failed!";
+}
+
 
 /**
  * Test All with GasT
@@ -236,13 +208,11 @@ const _gasTRandomFunTesting = async () => {
 const _gasTTestAll = async () => {
   console.time(`TESTING TIMER`);
   Promise.all([
-    await _gasTMessagingAndStaffTesting(),
-    await _gasTTicketTesting(),
+    await _gasTMetricsTesting(),
     await _gasTMiscTesting(),
-    await _gasTCalculationTesting(),
     await _gasTLoggerTesting(),
-    await _gasTEmailTesting(),
-    await _gasTUpdateTesting(),
+    await _gasTRandomFunTesting(),
+    await _gasTEmailerTesting(),
   ])
   .then(console.info('Test Success'))
   .catch(Error => {
