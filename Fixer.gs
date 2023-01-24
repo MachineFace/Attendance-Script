@@ -40,7 +40,7 @@ const ParseStudents = (list) => {
     .replace(/\s+/g, '')
     .split(/(?=[A-Z])/)
     .filter(x => x != `Removeattendee`)
-  // let nameset = [...new Set(split)];
+  console.error(`DOGSHIT: ${list}`)
   console.warn(`PRE: ${split}`);
   let firstnames = split
     .filter((x, idx) => (idx % 2 == 0))

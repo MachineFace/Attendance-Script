@@ -78,7 +78,9 @@
           <select class="browser-default" name="type" required>
             <option value="" disabled selected>Choose Training Type</option>
             <? Object.values(types).forEach(type => { ?>
-              <option id="type" name="type" value=<?=type?>><span> <?= type ?> </span></option>
+              <option id="type" name="type" value=<?=type?>> 
+                <span> <?= type ?> </span>
+              </option>
             <? }); ?>
           </select>
         </div>
