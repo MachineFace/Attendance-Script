@@ -203,6 +203,48 @@ const _gasTEmailerTesting = async () => {
 
 
 /**
+ * Test Fun Stuff with GasT
+ */
+const _gasTFixerTesting = async () => {
+  if ((typeof GasTap) === 'undefined') { 
+    eval(UrlFetchApp.fetch('https://raw.githubusercontent.com/huan/gast/master/src/gas-tap-lib.js').getContentText())
+  } 
+  const test = new GasTap();
+
+  await test(`TitleCase`, (t) => {
+    const x = TitleCase(`fucking titlecase`);
+    t.notEqual(x, undefined || null, `TitleCase SHOULD NOT return undefined or null: ${x}`);
+    t.equal(x, `Fucking Titlecase`, `TitleCase SHOULD return "Fucking Titlecase": ${x}`);
+
+    const y = TitleCase(1234);
+    t.equal(y, `1234`, `TitleCase SHOULD convert any other input to string: ${y}`);
+
+    const z = TitleCase(false);
+    t.equal(z, `False`, `TitleCase SHOULD convert any other input to string: ${z}`);
+  });
+
+  await test(`FileNameCleanup`, (t) => {
+    const x = FileNameCleanup(`filename.gcode`);
+    t.notEqual(x, undefined || null, `FileNameCleanup SHOULD NOT return undefined or null: ${x}`);
+    t.equal(x, `Filename`, `FileNameCleanup SHOULD return "Filename": ${x}`);
+
+    const y = FileNameCleanup(`file1234name.modified`);
+    t.equal(y, `Filename`, `FileNameCleanup SHOULD return "Filename": ${y}`);
+  });
+
+  await test(`ParseStudents`, (t) => {
+    let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
+    const x = ParseStudents(list);
+    t.notThrow(() => x, `ParseStudents SHOULD NOT throw error: ${x}`);
+  });
+
+
+  await test.finish();
+  if (test.totalFailed() > 0) throw "Some test(s) failed!";
+}
+
+
+/**
  * Test All with GasT
  */
 const _gasTTestAll = async () => {
@@ -213,6 +255,7 @@ const _gasTTestAll = async () => {
     await _gasTLoggerTesting(),
     await _gasTRandomFunTesting(),
     await _gasTEmailerTesting(),
+    await _gasTFixerTesting(),
   ])
   .then(console.info('Test Success'))
   .catch(Error => {

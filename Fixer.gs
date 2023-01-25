@@ -1,9 +1,50 @@
 /**
+ * return an object describing what was passed
+ * @param {*} ob the thing to analyze
+ * @return {object} object information
+ */
+const GetObjectType = (ob) => {
+  let stringify;
+  try {
+    // test for an object
+    if (ob !== Object(ob)) {
+        return {
+          type : typeof ob,
+          value : ob,
+          length : typeof ob === `string` ? ob.length : null 
+        } ;
+    }
+    else {
+      try {
+        stringify = JSON.stringify(ob);
+        console.warn(stringify);
+      }
+      catch (err) {
+        stringify = `{ "result" : "unable to stringify" }`
+        console.error(stringify);
+      }
+      return {
+        type : typeof ob ,
+        value : stringify,
+        name : ob.constructor ? ob.constructor.name : null,
+        nargs : ob.constructor ? ob.constructor.arity : null,
+        length : Array.isArray(ob) ? ob.length:null
+      };       
+    }
+  }
+  catch (err) {
+    return { type : `indeterminate type`, } ;
+  }
+}
+
+
+/**
  * Helper Method for TitleCasing Names
  * @param {string} string
  * @returns {string} titlecased
  */
 const TitleCase = (str) => {
+  if (typeof str !== `string`) str = str.toString();
   str = str
     .toLowerCase()
     .split(' ');
@@ -18,6 +59,8 @@ const TitleCase = (str) => {
  * Clean the junk out of the filename
  */
 const FileNameCleanup = (filename) => {
+  if (typeof filename !== `string`) filename = filename.toString();
+
   const regex = /[0-9_]/g;
   const regex2 = /[.]gcode/g;
   const regex3 = /\b[.]modified\b/g;
@@ -36,6 +79,8 @@ const FileNameCleanup = (filename) => {
 
 
 const ParseStudents = (list) => {
+  if (typeof list !== `string`) list = list.toString();
+
   let split = list
     .replace(/\s+/g, '')
     .split(/(?=[A-Z])/)
@@ -55,9 +100,15 @@ const ParseStudents = (list) => {
 }
 
 
+
+
+
 const _testListFixer = () => {
-  let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
-  ParseStudents(list);
+  // let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
+  // ParseStudents(list);
+
+  let list2 = `Issam Bourai Remove attendee Issam BouraiLydia Moog Remove attendee Lydia MoogJoshua Duarte Remove attendee Joshua DuarteDerek Shah Remove attendee Derek ShahNoah Johnson Remove attendee Noah JohnsonFlorian Kristof Remove attendee Florian KristofParth Behani`;
+  ParseStudents(list2);
 }
 
 
