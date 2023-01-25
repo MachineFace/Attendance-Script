@@ -236,6 +236,10 @@ const _gasTFixerTesting = async () => {
     let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
     const x = ParseStudents(list);
     t.notThrow(() => x, `ParseStudents SHOULD NOT throw error: ${x}`);
+
+    let list2 = `Issam Bourai Remove attendee Issam BouraiLydia Moog Remove attendee Lydia MoogJoshua Michael Duarte Remove attendee Joshua Michael DuarteDerek Shah Remove attendee Derek ShahJohn Jacobs Remove attendee John JacobsJohn Roberts Remove attendee John RobertsNoah Johnson Remove attendee Noah JohnsonFlorian Kristof Remove attendee Florian KristofParth Behani`;
+    const y = ParseStudents(list2);
+    t.notThrow(() => y, `ParseStudents SHOULD NOT throw error: ${y}`);
   });
 
 
