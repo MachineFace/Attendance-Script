@@ -80,27 +80,30 @@ const FileNameCleanup = (filename) => {
 /**
  * Parse Students
  * @DEFUNCT
- */
-// const ParseStudents = (list) => {
-//   if (typeof list !== `string`) list = list.toString();
+ *
+const ParseStudents = (list) => {
+  if (typeof list !== `string`) list = list.toString();
 
-//   let split = list
-//     .replace(/\s+/g, '')
-//     .split(/(?=[A-Z])/)
-//     .filter(x => x != `Removeattendee`)
-//   console.error(`DOGSHIT: ${list}`)
-//   console.warn(`PRE: ${split}`);
-//   let firstnames = split
-//     .filter((x, idx) => (idx % 2 == 0))
-//     .filter((x, idx) => (idx % 2 == 0))
-//   let lastnames = split
-//     .filter((x, idx) => (idx % 2 == 1))
-//     .filter((x, idx) => (idx % 2 == 0))
-//   let out = [];
-//   firstnames.forEach( (firstname, idx) => out.push(`${firstname} ${lastnames[idx]}`));
-//   console.warn(out)
-//   return out;
-// }
+  let split = list
+    .replace(/\s+/g, '')
+    .split(/(?=[A-Z])/)
+    .filter(x => x != `Removeattendee`)
+  console.error(`DOGSHIT: ${list}`)
+  console.warn(`PRE: ${split}`);
+  let firstnames = split
+    .filter((x, idx) => (idx % 2 == 0))
+    .filter((x, idx) => (idx % 2 == 0))
+  let lastnames = split
+    .filter((x, idx) => (idx % 2 == 1))
+    .filter((x, idx) => (idx % 2 == 0))
+  let out = [];
+  firstnames.forEach( (firstname, idx) => out.push(`${firstname} ${lastnames[idx]}`));
+  console.warn(out)
+  return out;
+}
+*/
+
+
 
 /**
  * Parse Students
@@ -145,6 +148,8 @@ const _testListFixer = () => {
 
   let list2 = `Issam Bourai Remove attendee Issam BouraiLydia Moog Remove attendee Lydia MoogJoshua Michael Duarte Remove attendee Joshua Michael DuarteDerek Shah Remove attendee Derek ShahJohn Jacobs Remove attendee John JacobsJohn Roberts Remove attendee John RobertsNoah Johnson Remove attendee Noah JohnsonFlorian Kristof Remove attendee Florian KristofParth Behani`;
   ParseStudents2(list2);
+
+
 }
 
 
