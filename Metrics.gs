@@ -6,6 +6,7 @@
 class CalculateMetrics
 {
   constructor() {
+    this.data = SHEETS.Main.getDataRange().getValues();
     this.trainingType = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
     this.students = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)
     this.presentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present)
@@ -17,6 +18,12 @@ class CalculateMetrics
 
   _CountUnique(iterable) {
     return new Set(iterable).size;
+  }
+
+  _CountCategorical (list) {
+    let count = {};
+    list.forEach( key => count[key] = ++count[key] || 1);
+    return count;
   }
 
   CountCategories () {
@@ -48,18 +55,28 @@ class CalculateMetrics
       if(type == TYPES.ultimakers && this.presentColumn[index] == true) ultimakerCount++;
       if(type == TYPES.laser && this.presentColumn[index] == true) laserCount++;
     });
-    this.writer.Info(`Haas Count : ${haasCount}`);
-    this.writer.Info(`Tormach Count : ${tormachCount}`);
-    this.writer.Info(`FabLight Count : ${fablightCount}`);
-    this.writer.Info(`Type A / Ultimaker Count : ${ultimakerCount}`);
-    this.writer.Info(`Laser Count : ${laserCount}`);
+    console.info(`Haas Count : ${haasCount}`);
+    console.info(`Tormach Count : ${tormachCount}`);
+    console.info(`FabLight Count : ${fablightCount}`);
+    console.info(`Type A / Ultimaker Count : ${ultimakerCount}`);
+    console.info(`Laser Count : ${laserCount}`);
 
     // Write to Sheet
-    OTHERSHEETS.Metrics.getRange('E3').setValue(haasCount);
-    OTHERSHEETS.Metrics.getRange('E4').setValue(ultimakerCount);
-    OTHERSHEETS.Metrics.getRange('E5').setValue(tormachCount);
-    OTHERSHEETS.Metrics.getRange('E6').setValue(fablightCount);
-    OTHERSHEETS.Metrics.getRange('E7').setValue(laserCount);
+    OTHERSHEETS.Metrics.getRange(3, 3).setValue(`Haas Mini Mill Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(3, 4).setValue(haasCount);
+
+    OTHERSHEETS.Metrics.getRange(4, 3).setValue(`Ultimaker Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(4, 4).setValue(ultimakerCount);
+
+    OTHERSHEETS.Metrics.getRange(5, 3).setValue(`Tormach Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(5, 4).setValue(tormachCount);
+
+    OTHERSHEETS.Metrics.getRange(6, 3).setValue(`Fablight Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(6, 4).setValue(fablightCount);
+
+    OTHERSHEETS.Metrics.getRange(7, 3).setValue(`Laser Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(7, 4).setValue(laserCount);
+
     return {
       haas : haasCount, 
       tormach : tormachCount,
@@ -76,8 +93,9 @@ class CalculateMetrics
     cleaned.forEach(entry => {
       if(entry == true) total++
     });
-    this.writer.Info(`Total Trained : ${total}`);
-    OTHERSHEETS.Metrics.getRange('E8').setValue(total);
+    console.info(`Total Trained : ${total}`);
+    OTHERSHEETS.Metrics.getRange(8, 3).setValue(`Total Trained:`);
+    OTHERSHEETS.Metrics.getRange(8, 4).setValue(total);
     return total;
   }
 
@@ -88,7 +106,8 @@ class CalculateMetrics
       if(absentee == true) absent++;
     });  
     this.writer.Info(`Total Absent : ${absent}`);
-    OTHERSHEETS.Metrics.getRange('E9').setValue(absent);
+    OTHERSHEETS.Metrics.getRange(9, 3).setValue(`Total Absent:`);
+    OTHERSHEETS.Metrics.getRange(9, 4).setValue(absent);
     return absent;
   }
 
@@ -99,7 +118,7 @@ class CalculateMetrics
       if(this.enteredColumn[index] == true) students.push(student);
     })
     let unique = this._CountUnique(students);
-    this.writer.Info(`Total Students Trained : ${unique}`);
+    console.info(`Total Students Trained : ${unique}`);
     return unique;
   }
 
@@ -124,6 +143,62 @@ class CalculateMetrics
     return items;  
   }
 
+  StudentDistribution () {
+    let names = []
+      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
+      .filter(Boolean)
+      .filter(x => x != `Semester Total`)
+      .map(x => x = x.toLowerCase());
+
+    let occurrences = names.reduce( (acc, curr) => {
+      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+    }, {});
+    let items = Object.keys(occurrences).map((key) => [TitleCase(key), occurrences[key]]);
+    items.sort((first, second) => {
+      return second[1] - first[1];
+    });
+    // console.info(`Distribution ----> ${items}`);
+    return items;  
+  }
+  PrintTopTen () {
+    const distribution = this.StudentDistribution();
+
+    // Create a new array with only the first 10 items
+    let chop = distribution.slice(0, 11);
+    console.info(chop);
+
+    OTHERSHEETS.Metrics.getRange(19, 3)
+      .setValue(`Top Ten Returning Trainees`)
+      .setTextStyle(SpreadsheetApp.newTextStyle().setBold(true).build())
+      .setHorizontalAlignment(`center`);
+    chop.forEach((pair, index) => {
+      console.info(`${pair[0]} -----> ${pair[1]}`);
+      OTHERSHEETS.Metrics.getRange(20 + index, 2).setValue(index + 1); 
+      OTHERSHEETS.Metrics.getRange(20 + index, 3).setValue(pair[0]); 
+      OTHERSHEETS.Metrics.getRange(20 + index, 4).setValue(pair[1]); 
+    })
+    OTHERSHEETS.Metrics.getRange(19, 2, 12, 3).setBackground(COLORS.grey);
+  }
+  PrintAllTrainees () {
+    let names = this.StudentDistribution();
+    OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
+    OTHERSHEETS.Everyone.getRange(1, 5).setValue(`Total Trained: ${names.length}`);
+  }
+
+  // @NOTIMPLEMENTED
+  ListAllTrainees () {
+    let names = []
+      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
+      .filter(Boolean)
+      .filter(x => x != `Semester Total`)
+      .map(x => x = x.toLowerCase());
+    let unique = [...new Set(names)]
+      .map(x => x = TitleCase(x));
+    console.info(unique);
+    return unique;
+  }
+
+  
   SumCategories () {
     let count = {};
     let types = [].concat(...this.trainingType).filter(Boolean);
@@ -150,11 +225,13 @@ const Metrics = () => {
   calc.CountAbsent();
   calc.CountAllTrainedUsers();
   calc.CalculateDistribution();
+  calc.PrintTopTen();
+  calc.PrintAllTrainees();
 }
 
 const _testMetrics = () => {
   const c = new CalculateMetrics();
-  console.info(c.CountCategories());
+  c.PrintAllTrainees();
 }
 
 

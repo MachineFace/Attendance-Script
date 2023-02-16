@@ -38,21 +38,6 @@ const GetObjectType = (ob) => {
 }
 
 
-/**
- * Helper Method for TitleCasing Names
- * @param {string} string
- * @returns {string} titlecased
- */
-const TitleCase = (str) => {
-  if (typeof str !== `string`) str = str.toString();
-  str = str
-    .toLowerCase()
-    .split(' ');
-  for (var i = 0; i < str.length; i++) {
-    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-  }
-  return str.join(' ');
-}
 
 
 /**
@@ -147,7 +132,7 @@ const _testListFixer = () => {
   // ParseStudents(list);
 
   let list2 = `Issam Bourai Remove attendee Issam BouraiLydia Moog Remove attendee Lydia MoogJoshua Michael Duarte Remove attendee Joshua Michael DuarteDerek Shah Remove attendee Derek ShahJohn Jacobs Remove attendee John JacobsJohn Roberts Remove attendee John RobertsNoah Johnson Remove attendee Noah JohnsonFlorian Kristof Remove attendee Florian KristofParth Behani`;
-  ParseStudents2(list2);
+  ParseStudents(list2);
 
 
 }

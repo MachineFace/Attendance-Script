@@ -72,16 +72,16 @@ class FuckOffAsAService
       return false;
     }
     let content = html.getContentText();
-    let parsed = this.Parse(content).title;
+    let parsed = this._Parse(content).title;
     return parsed;
   }
 
   /**
-   * Parse html content.
+   * Parse html content. <private>
    * @param {string} html
    * @return {{}} {title : string, subtitle : string}
    */
-  Parse (content) {
+  _Parse (content) {
     content = content.toString();
     const titleStart = content.search(`<h1>`);
     const titleEnd = content.search(`</h1>`);

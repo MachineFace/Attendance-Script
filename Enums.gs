@@ -136,6 +136,7 @@ const OTHERSHEETS = {
   Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
   HaasUsage : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Haas Usage`),
   Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
+  Everyone : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Every Trainee`),
 }
 
 const BLOCKLIST = [
