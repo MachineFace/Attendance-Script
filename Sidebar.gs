@@ -44,8 +44,7 @@ const _testTypes = () => {
 }
 
 const handleFact = async () => {
-  let fact = await new RandomFacts().UselessFact(); 
-  console.warn(fact);
+  let fact = await RandomFacts.UselessFact(); 
   return fact;
 }
 

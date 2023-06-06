@@ -12,14 +12,12 @@
  */
 const GetByHeader = (sheet, columnName, row) => {
   try {
-    if(CheckSheetIsForbidden(sheet) == true) {
-      throw new Error(`A non-sheet argument was passed to a function that requires a sheet.`);
-    }
+    if(CheckSheetIsForbidden(sheet) == true) throw new Error(`A non-sheet argument was passed to a function that requires a sheet.`);
     let data = sheet.getDataRange().getValues();
     let col = data[0].indexOf(columnName);
     if (col != -1) return data[row - 1][col];
   } catch (err) {
-    console.error(`${err} : GetByHeader failed - Sheet: ${sheet} Col Name specified: ${columnName} Row: ${row}`);
+    console.error(`"GetByHeader()" failed : ${err}, Sheet: ${sheet} Col Name specified: ${columnName} Row: ${row}`);
   }
 };
 

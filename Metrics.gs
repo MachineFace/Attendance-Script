@@ -3,30 +3,40 @@
  * ----------------------------------------------------------------------------------------------------------------
  * Metrics Class for Attendance Data
  */ 
-class CalculateMetrics
-{
+class Calculate {
   constructor() {
+    /** @private */
     this.data = SHEETS.Main.getDataRange().getValues();
-    this.trainingType = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
-    this.students = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)
-    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present)
-    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online)
-    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses)
-    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent)
-    this.writer = new WriteLogger();
+    /** @private */
+    this.trainingType = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
+    /** @private */
+    this.students = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
+    /** @private */
+    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
+    /** @private */
+    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
+    /** @private */
+    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
+    /** @private */
+    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
   }
 
+  /** @private */
   _CountUnique(iterable) {
     return new Set(iterable).size;
   }
 
+  /** @private */
   _CountCategorical (list) {
     let count = {};
     list.forEach( key => count[key] = ++count[key] || 1);
     return count;
   }
 
-  CountCategories () {
+  /**
+   * Count Categories
+   */
+  static CountCategories() {
     let categories = [];
     GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
       .filter(Boolean)
@@ -42,18 +52,23 @@ class CalculateMetrics
     return occurrences; 
   }
 
-  CountEachCategoryTrained () {
+  /**
+   * Count Categories Trained
+   * @return {object} categories and counts
+   */
+  static CountEachCategoryTrained() {
     let haasCount = 0;
     let tormachCount = 0;
     let fablightCount = 0;
     let ultimakerCount = 0;
     let laserCount = 0;
-    this.trainingType.forEach( (type,index) => {
-      if(type == TYPES.haas && this.presentColumn[index] == true) haasCount++;
-      if(type == TYPES.tormach && this.presentColumn[index] == true) tormachCount++;
-      if(type == TYPES.fablight && this.presentColumn[index] == true) fablightCount++;
-      if(type == TYPES.ultimakers && this.presentColumn[index] == true) ultimakerCount++;
-      if(type == TYPES.laser && this.presentColumn[index] == true) laserCount++;
+    const types = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
+    types.forEach( (type,index) => {
+      if(type == TYPES.haas && this.prototype.presentColumn[index] == true) haasCount++;
+      if(type == TYPES.tormach && this.prototype.presentColumn[index] == true) tormachCount++;
+      if(type == TYPES.fablight && this.prototype.presentColumn[index] == true) fablightCount++;
+      if(type == TYPES.ultimakers && this.prototype.presentColumn[index] == true) ultimakerCount++;
+      if(type == TYPES.laser && this.prototype.presentColumn[index] == true) laserCount++;
     });
     console.info(`Haas Count : ${haasCount}`);
     console.info(`Tormach Count : ${tormachCount}`);
@@ -86,8 +101,10 @@ class CalculateMetrics
     }
   }
 
-  CountPresent () {
-    // Count totals
+  /**
+   * Count Present
+   */
+  static CountPresent() {
     let total = 0;
     let cleaned = this.enteredColumn.filter(Boolean);
     cleaned.forEach(entry => {
@@ -99,19 +116,25 @@ class CalculateMetrics
     return total;
   }
 
-  CountAbsent () {
+  /**
+   * Count Absent
+   */
+  static CountAbsent() {
     // Count totals
     let absent = 0;
     this.absentColumn.forEach(absentee => {
       if(absentee == true) absent++;
     });  
-    this.writer.Info(`Total Absent : ${absent}`);
+    console.info(`Total Absent : ${absent}`);
     OTHERSHEETS.Metrics.getRange(9, 3).setValue(`Total Absent:`);
     OTHERSHEETS.Metrics.getRange(9, 4).setValue(absent);
     return absent;
   }
 
-  CountAllTrainedUsers () {
+  /**
+   * Count All Trained
+   */
+  static CountAllTrainedUsers() {
     let students = [];
     const cleaned = this.students.filter(Boolean);
     cleaned.forEach((student, index) => {
@@ -122,13 +145,14 @@ class CalculateMetrics
     return unique;
   }
 
-  CalculateDistribution () {
+  /**
+   * Distribution
+   */
+  static CalculateDistribution() { 
+    let types = [].concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
+      .filter(Boolean);
     
-    let types = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
-    types = [].concat(...types);
-    let culledTypes = types.filter(Boolean);
-    
-    let occurrences = culledTypes.reduce( (acc, curr) => {
+    let occurrences = types.reduce( (acc, curr) => {
       return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
     }, {});
     let items = Object.keys(occurrences).map((key) => {
@@ -139,11 +163,14 @@ class CalculateMetrics
     items.sort((first, second) => {
       return second[1] - first[1];
     });
-    this.writer.Info(`Distribution ----> ${items}`);
+    console.info(`Distribution ----> ${items}`);
     return items;  
   }
 
-  StudentDistribution () {
+  /**
+   * Student Distribution
+   */
+  static StudentDistribution() {
     let names = []
       .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
       .filter(Boolean)
@@ -160,7 +187,11 @@ class CalculateMetrics
     // console.info(`Distribution ----> ${items}`);
     return items;  
   }
-  PrintTopTen () {
+
+  /**
+   * Print Top Ten
+   */
+  static PrintTopTen() {
     const distribution = this.StudentDistribution();
 
     // Create a new array with only the first 10 items
@@ -179,14 +210,22 @@ class CalculateMetrics
     })
     OTHERSHEETS.Metrics.getRange(19, 2, 12, 3).setBackground(COLORS.grey);
   }
-  PrintAllTrainees () {
+
+  /**
+   * Print All Trained
+   */
+  static PrintAllTrainees() {
     let names = this.StudentDistribution();
     OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
     OTHERSHEETS.Everyone.getRange(1, 5).setValue(`Total Trained: ${names.length}`);
   }
 
-  // @NOTIMPLEMENTED
-  ListAllTrainees () {
+  /**
+   * List All Trainees
+   * @private
+   * @NOTIMPLEMENTED
+   */
+  static _ListAllTrainees() {
     let names = []
       .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
       .filter(Boolean)
@@ -198,8 +237,10 @@ class CalculateMetrics
     return unique;
   }
 
-  
-  SumCategories () {
+  /**
+   * Sum Categories
+   */
+  static SumCategories() {
     let count = {};
     let types = [].concat(...this.trainingType).filter(Boolean);
 
@@ -219,19 +260,17 @@ class CalculateMetrics
  * @TRIGGERED - Once a day
  */
 const Metrics = () => {
-  const calc = new CalculateMetrics();
-  calc.CountEachCategoryTrained();
-  calc.CountPresent();
-  calc.CountAbsent();
-  calc.CountAllTrainedUsers();
-  calc.CalculateDistribution();
-  calc.PrintTopTen();
-  calc.PrintAllTrainees();
+  Calculate.CountEachCategoryTrained();
+  Calculate.CountPresent();
+  Calculate.CountAbsent();
+  Calculate.CountAllTrainedUsers();
+  Calculate.CalculateDistribution();
+  Calculate.PrintTopTen();
+  Calculate.PrintAllTrainees();
 }
 
 const _testMetrics = () => {
-  const c = new CalculateMetrics();
-  c.PrintAllTrainees();
+  Calculate.PrintAllTrainees();
 }
 
 

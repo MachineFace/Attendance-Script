@@ -124,7 +124,6 @@ const HEADERNAMES = {
   bCourses : `Entered in bCourses`,
   absent : `Absent`,
   random : `Random Fact`,
-  fuckOff :	`Fuck Off As A Service`,		
 }
 
 const SHEETS = {

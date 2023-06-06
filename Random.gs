@@ -1,50 +1,47 @@
 /**
+ * ----------------------------------------------------------------------------------------------------------------
  * Class for accessing "Random Fact" API for a new random fact.
  */
-class RandomFacts
-{
+class RandomFacts {
   constructor() {
-    this.repo = `https://uselessfacts.jsph.pl/random.json?language=en`;
-    this.params = {
+  
+  }
+
+  /**
+   * Fetch a Useless Fact
+   * @return {string} fact
+   */
+  static async UselessFact() {
+    const repo = `https://uselessfacts.jsph.pl/random.json?language=en`;
+    const params = {
       method : "GET",
       headers : { "Authorization" : "Basic ", },
       contentType : "application/json",
       followRedirects : true,
       muteHttpExceptions : true
     };
-  }
-
-  /**
-   * ----------------------------------------------------------------------------------------------------------------
-   * Fetch a Useless Fact
-   * @return {string} fact
-   */
-  async UselessFact () {
-    
-    
-    let html = await UrlFetchApp.fetch(this.repo, this.params);
-    let responseCode = html.getResponseCode();
-    // writer.Debug(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
-    if (responseCode == 200 || responseCode == 201) {
-      let content = JSON.parse(html.getContentText())["text"];
+    try {
+      const response = await UrlFetchApp.fetch(repo, params);
+      const responseCode = response.getResponseCode();
+      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      const content = JSON.parse(response.getContentText())["text"];
       console.info(content);
       return content;
-    } else {
-      console.error('Failed to Do Dat');
-      return false;
+    } catch(err) {
+      console.error(`"UselessFact()" failed : ${err}`);
     }
+     
   }
   
   /**
-   * ----------------------------------------------------------------------------------------------------------------
    * Fill the sheet
    */
-  async LoopAndFill () {
+  static async LoopAndFill() {
     const present = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
     const online = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
     const entered = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
-    let f = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
-    let factColumn = f.filter(Boolean);
+    let factColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
+      .filter(Boolean);
     console.info(`${present.length}, ${online.length}, ${entered.length}`);
     
     for(let i = 0; i < present.length; i++) {
@@ -55,7 +52,7 @@ class RandomFacts
           SetByHeader(SHEETS.Main, HEADERNAMES.random, i + 2, fact);
         } else {
           fact = await this.UselessFact();
-          console.info(`Trying again : ${fact}`)
+          console.info(`Trying again : ${fact}`);
         }
       }
     }
@@ -63,14 +60,14 @@ class RandomFacts
   }
 
   /**
-   * ----------------------------------------------------------------------------------------------------------------
    * Checks if a fact has already been printed or not.
+   * @private
    * @param {string} fact
    * @return {string} newfact
    */
   async _CheckFactRecursively (fact) {
-    let f = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
-    let factColumn = f.filter(Boolean);
+    const factColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
+      .filter(Boolean);
     const index = factColumn.indexOf(fact);
     const limit = 10;
     let count = 0;
@@ -89,12 +86,11 @@ class RandomFacts
   }
 
   /**
-   * ----------------------------------------------------------------------------------------------------------------
    * Loops through and prints some number of facts.
    * @param {number} count
    * @return {string} facts
    */
-  async ShowMeTheMoney (count) {
+  static async ShowMeTheMoney(count) {
     for(let i = 0; i < count; i++) {
       await this.UselessFact();
     }
@@ -103,7 +99,9 @@ class RandomFacts
   
 }
 
-
+const _testUselessFact = () => {
+  RandomFacts.UselessFact();
+}
 
 
 

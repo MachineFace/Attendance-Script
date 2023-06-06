@@ -1,6 +1,5 @@
 
-class SudokuSolver
-{
+class SudokuSolver {
   constructor({
     board : board
   }) {
@@ -11,8 +10,9 @@ class SudokuSolver
 
   /**
    * Check if a number exists in a Row 
+   * @private
    */
-  IsNumberInRow (number, row) {
+  _IsNumberInRow(number, row) {
     for(let i = 0; i < this.gridsize; i++) {
       if(this.board[row][i] == number) return true;
     }
@@ -21,8 +21,9 @@ class SudokuSolver
 
   /**
    * Check if a number exists in a Column
+   * @private
    */
-  IsNumberInColumn (number, column) {
+  _IsNumberInColumn (number, column) {
     for(let i = 0; i < this.gridsize; i++) {
       if(this.board[i][column] == number) return true;
     }
@@ -31,8 +32,9 @@ class SudokuSolver
 
   /**
    * Check if a number exists in a Row
+   * @private
    */
-  IsNumberInBox (number, row, column) {
+  _IsNumberInBox (number, row, column) {
     let localBoxRow = row - row % 3;
     let localBoxColumn = column - column % 3;
     for(let i = localBoxRow; i < localBoxRow + 3; i++ ) {
@@ -45,9 +47,10 @@ class SudokuSolver
 
   /**
    * Check if the number a valid placement
+   * @private
    */
-  IsValidPlacement (number, row, column) {
-    return !this.IsNumberInRow(number, row) && !this.IsNumberInColumn(number, column) && !this.IsNumberInBox(number, row, column);
+  _IsValidPlacement (number, row, column) {
+    return !this._IsNumberInRow(number, row) && !this._IsNumberInColumn(number, column) && !this._IsNumberInBox(number, row, column);
   }
 
   /**
@@ -58,7 +61,7 @@ class SudokuSolver
       for(let column = 0; column < this.gridsize; column++) {
         if(this.board[row][column] == 0) {
           for(let testNumber = 1; testNumber <= this.gridsize; testNumber++) {
-            if(this.IsValidPlacement(testNumber, row, column)) {
+            if(this._IsValidPlacement(testNumber, row, column)) {
               this.board[row][column] = testNumber;
               if(this.Solve(this.board)) return true;
               else this.board[row][column] = 0;

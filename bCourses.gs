@@ -3,8 +3,7 @@
  * bCourses Class
  * @NOTIMPLEMENTED
  */
-class BCourses
-{
+class BCourses {
   constructor() {
     this.token = `1072~WyQLWVWk0exa5l2Y8tpIO6ZRePrc8yrjlGpbz9NpiPag5mJv3SNTub1SA1fiLfax`;
     // this.root = `https://bcourses.berkeley.edu/api/v1`;

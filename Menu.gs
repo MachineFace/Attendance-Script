@@ -3,12 +3,11 @@
  * Popup Count each category Trained
  */
 const PopupCategoryTrained = async () => {
-  let ui = await SpreadsheetApp.getUi();
-  const calc = new CalculateMetrics();
-  let counts = await calc.CountEachCategoryTrained();
+  const ui = await SpreadsheetApp.getUi();
+  const counts = Calculate.CountEachCategoryTrained();
   ui.alert(
     `${ServiceName}`,
-    `${JSON.stringify(counts)}`,
+    `${JSON.stringify(counts, null, 3)}`,
     ui.ButtonSet.OK
   );
 };
@@ -17,11 +16,10 @@ const PopupCategoryTrained = async () => {
  * Popup Count each category Trained
  */
 const PopupCountAllTrainedUsers = async () => {
-  let ui = await SpreadsheetApp.getUi();
-  const c = new CalculateMetrics();
-  let counts = await c.CountAllTrainedUsers();
-  let absent = await c.CountAbsent();
-  let present = c.CountPresent();
+  const ui = await SpreadsheetApp.getUi();
+  const counts = Calculate.CountAllTrainedUsers();
+  const absent = Calculate.CountAbsent();
+  const present = Calculate.CountPresent();
   ui.alert(
     `${ServiceName}`,
     `Number of Trained Users ----> ${counts}\n` + 
@@ -35,8 +33,8 @@ const PopupCountAllTrainedUsers = async () => {
  * Popup Generate Random Fact
  */
 const PopupRandomFact = async () => {
-  let ui = await SpreadsheetApp.getUi();
-  let fact = await new RandomFacts().UselessFact()
+  const ui = await SpreadsheetApp.getUi();
+  const fact = await RandomFacts.UselessFact();
   ui.alert(
     `${ServiceName}`,
     `${fact}`,
@@ -48,8 +46,8 @@ const PopupRandomFact = async () => {
  * Popup Generate Fuckoff as a service
  */
 const PopupFOff = async () => {
-  let ui = await SpreadsheetApp.getUi();
-  let fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom()
+  const ui = await SpreadsheetApp.getUi();
+  const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom()
   ui.alert(
     `${ServiceName}`,
     `${fOff}`,
@@ -101,9 +99,9 @@ const BuildHTMLHELP = () => {
  * Creates a modal pop-up for the help text.
  */
 const PopupHelp = () => {
-  let ui = SpreadsheetApp.getUi();
-  let title = `${ServiceName}`;
-  let htmlOutput = HtmlService.createHtmlOutput(BuildHTMLHELP())
+  const ui = SpreadsheetApp.getUi();
+  const title = `${ServiceName}`;
+  const htmlOutput = HtmlService.createHtmlOutput(BuildHTMLHELP())
     .setWidth(640)
     .setHeight(480);
   ui.showModalDialog(htmlOutput, title);
@@ -113,9 +111,9 @@ const PopupHelp = () => {
  * Popup Delete Old Emails
  */
 const PopupCleanOutJPSNotifications = async () => {
-  let ui = await SpreadsheetApp.getUi();
-  let fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
-  let response = ui.alert(
+  const ui = await SpreadsheetApp.getUi();
+  const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
+  const response = ui.alert(
     `${ServiceName}`,
     `Deleting all the old JPS Notification emails....`, 
     ui.ButtonSet.OK_CANCEL
@@ -163,8 +161,10 @@ const BarMenu = () => {
  * Switch to scanning page.
  */
 const OpenMainTab = async () => {
-  let spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  await spreadsheet.setActiveSheet(SHEETS.Main).getRange('B3').activate();
+  SpreadsheetApp.getActiveSpreadsheet()
+    .setActiveSheet(SHEETS.Main)
+    .getRange('B3')
+    .activate();
 }
 
 

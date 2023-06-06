@@ -77,8 +77,7 @@ const SetConditionalFormatting = () => {
  * @NOTIMPLEMENTED
  */
 /** 
-class Colorer
-{
+class Colorer {
   constructor({thisRow = 1}) {
     this.thisRow = thisRow;
     this.writer = new WriteLogger();

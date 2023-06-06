@@ -146,18 +146,18 @@ const _gasTRandomFunTesting = async () => {
   const test = new GasTap();
 
   await test(`UselessFact`, (t) => {
-    const x = new RandomFacts().UselessFact();
+    const x = RandomFacts.UselessFact();
     t.notEqual(x, undefined || null, `UselessFact SHOULD NOT return undefined or null: ${x}`);
   });
 
   await test(`ShowMeTheMoney`, (t) => {
-    const x = new RandomFacts().ShowMeTheMoney(50);
+    const x = RandomFacts.ShowMeTheMoney(50);
     t.notEqual(x, undefined || null, `ShowMeTheMoney SHOULD NOT return undefined or null: ${x}`);
   });
 
   await test(`_CheckFactRecursively`, (t) => {
     t.skip();
-    const x = new RandomFacts()._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
+    const x = RandomFacts._CheckFactRecursively("166,875,000,000 pieces of mail are delivered each year in the US");
     t.notEqual(x, undefined || null, `_CheckFactRecursively SHOULD NOT return undefined or null: ${x}`);
   });
 

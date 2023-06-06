@@ -4,8 +4,7 @@
  * ----------------------------------------------------------------------------------------------------------------
  * Fuck Off as a Service
  */
-class FuckOffAsAService
-{
+class FuckOffAsAService {
   constructor({
     username : username = `Me`,
     name : name = `Whatever-your-name-is`,
@@ -22,7 +21,7 @@ class FuckOffAsAService
     this.something = something;
     this.behavior = behavior;
     this.reference = `http://google.com`;
-    this.endpoints = this.Endpoints();
+    this.endpoints = this._Endpoints();
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
 
     this.params = {
@@ -33,7 +32,8 @@ class FuckOffAsAService
     };
   }
 
-  Endpoints () {
+  /** @private */
+  _Endpoints() {
     return [
       `/everyone/${this.username}`,
       `/thanks/${this.username}`,
@@ -60,24 +60,28 @@ class FuckOffAsAService
   }
 
 
-
+  /**
+   * Get Random Fact
+   * @return {string} random fact
+   */
   async GetRandom () {
-    let repo = this.randomEndpoint;
-
-    let html = await UrlFetchApp.fetch(this.root + repo, this.params);
-    let responseCode = html.getResponseCode();
-    console.info(`Response Code : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
-    if (responseCode !== 200 && responseCode !== 201) {
-      console.error(`${responseCode} ---> ${RESPONSECODES[responseCode]} : Failed to Do Dat`);
-      return false;
+    const repo = this.randomEndpoint;
+    try {
+      const response = await UrlFetchApp.fetch(this.root + repo, this.params);
+      const responseCode = response.getResponseCode();
+      if (responseCode !== 200) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      const content = response.getContentText();
+      const parsed = this._Parse(content).title;
+      console.info(parsed);
+      return parsed;
+    } catch(err) {
+      console.error(`"GetRandom()" failed : ${err}`);
     }
-    let content = html.getContentText();
-    let parsed = this._Parse(content).title;
-    return parsed;
   }
 
   /**
-   * Parse html content. <private>
+   * Parse html content.
+   * @private
    * @param {string} html
    * @return {{}} {title : string, subtitle : string}
    */
@@ -101,10 +105,7 @@ class FuckOffAsAService
 }
 
 
-const _testFuckOff = async () => {
-  const x = await new FuckOffAsAService({ name : `Mike Roch`}).GetRandom();
-  console.info(x);
-}
+const _testFuckOff = async () => await new FuckOffAsAService({ name : `Mike Roch`}).GetRandom();
 
 const DoFuckOff = async () => {
   const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
