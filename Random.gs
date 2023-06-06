@@ -66,9 +66,9 @@ class RandomFacts {
    * @return {string} newfact
    */
   async _CheckFactRecursively (fact) {
-    const factColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
-      .filter(Boolean);
-    const index = factColumn.indexOf(fact);
+    const index = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
+      .filter(Boolean)
+      .indexOf(fact);
     const limit = 10;
     let count = 0;
     let newFact;
@@ -76,7 +76,7 @@ class RandomFacts {
       console.info(count)
       return newFact;
     } else {
-      newFact = await this.UselessFact();
+      newFact = await RandomFacts.UselessFact();
       count++;
       console.info(count)
       this._CheckFactRecursively(newFact);
@@ -90,17 +90,17 @@ class RandomFacts {
    * @param {number} count
    * @return {string} facts
    */
-  static async ShowMeTheMoney(count) {
+  static async ShowMeTheMoney(count = 5) {
     for(let i = 0; i < count; i++) {
-      await this.UselessFact();
+      await RandomFacts.UselessFact();
     }
   }
 
   
 }
 
-const _testUselessFact = () => {
-  RandomFacts.UselessFact();
+const _testUselessFact = async () => {
+  await RandomFacts.ShowMeTheMoney(10);
 }
 
 

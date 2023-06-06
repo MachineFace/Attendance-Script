@@ -77,7 +77,7 @@ class WriteLogger {
     try {
       if(this.sheet.getLastRow() >= 500) this.sheet.deleteRow(2);
     } catch(err) {
-      console.error(`Whoops ---> ${err}`);
+      console.error(`"PopItem()" failed : ${err}`);
     }
   }
 
@@ -86,9 +86,10 @@ class WriteLogger {
     try {
       if(this.sheet.getLastRow() > 2000) {
         this.sheet.deleteRows(2, 1998);
+        this.sheet.appendRow();
       } else return 1;
     } catch(err) {
-      console.error(`Whoops ---> ${err}`);
+      console.error(`"CleanupSheet()" failed : ${err}`);
     }
   }
   

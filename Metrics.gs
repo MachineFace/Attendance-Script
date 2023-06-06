@@ -5,20 +5,7 @@
  */ 
 class Calculate {
   constructor() {
-    /** @private */
-    this.data = SHEETS.Main.getDataRange().getValues();
-    /** @private */
-    this.trainingType = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
-    /** @private */
-    this.students = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
-    /** @private */
-    this.presentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
-    /** @private */
-    this.onlineColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
-    /** @private */
-    this.enteredColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
-    /** @private */
-    this.absentColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
+    
   }
 
   /** @private */
@@ -48,68 +35,65 @@ class Calculate {
     let occurrences = categories.reduce( (acc, curr) => {
       return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
     }, {});
-
+    console.info(occurrences);
     return occurrences; 
   }
 
   /**
-   * Count Categories Trained
-   * @return {object} categories and counts
+   * Count User Types
+   * @returns {object} types, count
    */
-  static CountEachCategoryTrained() {
-    let haasCount = 0;
-    let tormachCount = 0;
-    let fablightCount = 0;
-    let ultimakerCount = 0;
-    let laserCount = 0;
-    const types = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment);
-    types.forEach( (type,index) => {
-      if(type == TYPES.haas && this.prototype.presentColumn[index] == true) haasCount++;
-      if(type == TYPES.tormach && this.prototype.presentColumn[index] == true) tormachCount++;
-      if(type == TYPES.fablight && this.prototype.presentColumn[index] == true) fablightCount++;
-      if(type == TYPES.ultimakers && this.prototype.presentColumn[index] == true) ultimakerCount++;
-      if(type == TYPES.laser && this.prototype.presentColumn[index] == true) laserCount++;
-    });
-    console.info(`Haas Count : ${haasCount}`);
-    console.info(`Tormach Count : ${tormachCount}`);
-    console.info(`FabLight Count : ${fablightCount}`);
-    console.info(`Type A / Ultimaker Count : ${ultimakerCount}`);
-    console.info(`Laser Count : ${laserCount}`);
+  static CountTypes() {
+    try {
+      let typeList = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
+        .filter(Boolean)
+        .filter(x => x != `Test`)
+        .filter(x => !x.includes(`Spring`))
+        .filter(x => !x.includes(`Summer`))
+        .filter(x => !x.includes(`Fall`))
+        .filter(x => !x.includes(`Workshop`));
 
-    // Write to Sheet
-    OTHERSHEETS.Metrics.getRange(3, 3).setValue(`Haas Mini Mill Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(3, 4).setValue(haasCount);
-
-    OTHERSHEETS.Metrics.getRange(4, 3).setValue(`Ultimaker Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(4, 4).setValue(ultimakerCount);
-
-    OTHERSHEETS.Metrics.getRange(5, 3).setValue(`Tormach Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(5, 4).setValue(tormachCount);
-
-    OTHERSHEETS.Metrics.getRange(6, 3).setValue(`Fablight Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(6, 4).setValue(fablightCount);
-
-    OTHERSHEETS.Metrics.getRange(7, 3).setValue(`Laser Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(7, 4).setValue(laserCount);
-
-    return {
-      haas : haasCount, 
-      tormach : tormachCount,
-      fablight : fablightCount,
-      ultimakers : ultimakerCount,
-      lasers : laserCount,
+      let occurrences = typeList.reduce( (acc, curr) => {
+        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+      }, {});
+      console.info(occurrences);
+      return occurrences;
+    } catch(err) {
+      console.error(`"CountTypes()" failed : ${err}`);
     }
   }
+
+  /**
+   * Print Types to Data Page
+   */
+  static PrintTypes() {
+    const types = Calculate.CountTypes();
+
+    OTHERSHEETS.Metrics.getRange(3, 3).setValue(`Haas Mini Mill Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(3, 4).setValue(types[`Haas Mini Mill`]);
+
+    OTHERSHEETS.Metrics.getRange(4, 3).setValue(`Ultimaker Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(4, 4).setValue(types['Type A / Ultimakers']);
+
+    OTHERSHEETS.Metrics.getRange(5, 3).setValue(`Tormach Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(5, 4).setValue(types[`Tormach`]);
+
+    OTHERSHEETS.Metrics.getRange(6, 3).setValue(`Fablight Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(6, 4).setValue(types[`FabLight`]);
+
+    OTHERSHEETS.Metrics.getRange(7, 3).setValue(`Laser Trainings Completed:`);
+    OTHERSHEETS.Metrics.getRange(7, 4).setValue(types['Laser (Special Session)'] + types['Laser (for PREP)'] + types['Laser (for TPREP)']);
+  }
+
+
 
   /**
    * Count Present
    */
   static CountPresent() {
-    let total = 0;
-    let cleaned = this.enteredColumn.filter(Boolean);
-    cleaned.forEach(entry => {
-      if(entry == true) total++
-    });
+    let total = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present)
+      .filter(Boolean)
+      .length;
     console.info(`Total Trained : ${total}`);
     OTHERSHEETS.Metrics.getRange(8, 3).setValue(`Total Trained:`);
     OTHERSHEETS.Metrics.getRange(8, 4).setValue(total);
@@ -120,11 +104,9 @@ class Calculate {
    * Count Absent
    */
   static CountAbsent() {
-    // Count totals
-    let absent = 0;
-    this.absentColumn.forEach(absentee => {
-      if(absentee == true) absent++;
-    });  
+    let absent = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent)
+      .filter(Boolean)
+      .length;  
     console.info(`Total Absent : ${absent}`);
     OTHERSHEETS.Metrics.getRange(9, 3).setValue(`Total Absent:`);
     OTHERSHEETS.Metrics.getRange(9, 4).setValue(absent);
@@ -136,33 +118,36 @@ class Calculate {
    */
   static CountAllTrainedUsers() {
     let students = [];
-    const cleaned = this.students.filter(Boolean);
-    cleaned.forEach((student, index) => {
-      if(this.enteredColumn[index] == true) students.push(student);
-    })
-    let unique = this._CountUnique(students);
-    console.info(`Total Students Trained : ${unique}`);
-    return unique;
+    const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
+    const entered = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
+    names.forEach((student, index) => {
+      if(entered[index] == true) students.push(student);
+    });
+    let count = new Set(students).size;
+    console.info(`Total Students Trained : ${count}`);
+    return count;
   }
 
   /**
    * Distribution
    */
   static CalculateDistribution() { 
-    let types = [].concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
-      .filter(Boolean);
-    
+    let types = []
+      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
+      .filter(Boolean)
+      .filter(x => !x.includes(`Spring`))
+      .filter(x => !x.includes(`Summer`))
+      .filter(x => !x.includes(`Fall`))
+      .filter(x => !x.includes(`Workshop`))
+      .filter(x => !x.includes(`Conquering`));
+
     let occurrences = types.reduce( (acc, curr) => {
       return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
     }, {});
-    let items = Object.keys(occurrences).map((key) => {
-      if (key != "" || key != undefined || key != null) {
-        return [key, occurrences[key]];
-      }
-    });
-    items.sort((first, second) => {
-      return second[1] - first[1];
-    });
+    let items = Object.keys(occurrences)
+      .map( key => [key, occurrences[key]])
+      .sort((first, second) => second[1] - first[1]);
+
     console.info(`Distribution ----> ${items}`);
     return items;  
   }
@@ -192,22 +177,20 @@ class Calculate {
    * Print Top Ten
    */
   static PrintTopTen() {
-    const distribution = this.StudentDistribution();
-
-    // Create a new array with only the first 10 items
-    let chop = distribution.slice(0, 11);
-    console.info(chop);
+    const distribution = Calculate.StudentDistribution()
+      .slice(0, 11)
+    console.info(distribution);
 
     OTHERSHEETS.Metrics.getRange(19, 3)
       .setValue(`Top Ten Returning Trainees`)
       .setTextStyle(SpreadsheetApp.newTextStyle().setBold(true).build())
       .setHorizontalAlignment(`center`);
-    chop.forEach((pair, index) => {
+    distribution.forEach((pair, index) => {
       console.info(`${pair[0]} -----> ${pair[1]}`);
       OTHERSHEETS.Metrics.getRange(20 + index, 2).setValue(index + 1); 
       OTHERSHEETS.Metrics.getRange(20 + index, 3).setValue(pair[0]); 
       OTHERSHEETS.Metrics.getRange(20 + index, 4).setValue(pair[1]); 
-    })
+    });
     OTHERSHEETS.Metrics.getRange(19, 2, 12, 3).setBackground(COLORS.grey);
   }
 
@@ -215,7 +198,7 @@ class Calculate {
    * Print All Trained
    */
   static PrintAllTrainees() {
-    let names = this.StudentDistribution();
+    let names = Calculate.StudentDistribution();
     OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
     OTHERSHEETS.Everyone.getRange(1, 5).setValue(`Total Trained: ${names.length}`);
   }
@@ -242,7 +225,9 @@ class Calculate {
    */
   static SumCategories() {
     let count = {};
-    let types = [].concat(...this.trainingType).filter(Boolean);
+    let types = []
+      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
+      .filter(Boolean);
 
     let countFunc = (keys) => {
       count[keys] = ++count[keys] || 1;
@@ -260,7 +245,7 @@ class Calculate {
  * @TRIGGERED - Once a day
  */
 const Metrics = () => {
-  Calculate.CountEachCategoryTrained();
+  Calculate.CountTypes();
   Calculate.CountPresent();
   Calculate.CountAbsent();
   Calculate.CountAllTrainedUsers();

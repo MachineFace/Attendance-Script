@@ -6,7 +6,7 @@
 const ServiceName = `🦤 AttendanceBot 🦤`;
 const DELETE_AFTER_DAYS = 90;
 
-const COLORS = {
+const COLORS = Object.freeze({
   green_light : `#d9ead3`,
   green : `74d975`, 
   green_dark : `#93c47d`, 
@@ -33,10 +33,9 @@ const COLORS = {
   grey : `#cccccc`, 
   grey_dark : `#999999`,
   black : `#000000`,
-}
+});
 
-
-const RESPONSECODES = {
+const RESPONSECODES = Object.freeze({
 	200 : `OK`,
 	201 : `Created`,
 	202 : `Accepted`,
@@ -103,19 +102,17 @@ const RESPONSECODES = {
 	511 : `Network Authentication Required`,
 	598 : `Network read timeout error`,
 	599 : `Network connect timeout error`,
-}
+});
 
-
-
-const TYPES = {
+const TYPES = Object.freeze({
   haas : 'Haas Mini Mill',
   tormach : 'Tormach',
   fablight : 'FabLight',
   ultimakers : 'Type A / Ultimakers',
   laser : 'Laser Cutter',
-}
+});
 
-const HEADERNAMES = {
+const HEADERNAMES = Object.freeze({
   date : `Date`,
   equipment :	`Equipment`,
   name : `Student Name`,
@@ -124,19 +121,19 @@ const HEADERNAMES = {
   bCourses : `Entered in bCourses`,
   absent : `Absent`,
   random : `Random Fact`,
-}
+});
 
-const SHEETS = {
+const SHEETS = Object.freeze({
   Main : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main'), 
-}
+});
 
-const OTHERSHEETS = {
+const OTHERSHEETS = Object.freeze({
   Metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
   Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
   HaasUsage : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Haas Usage`),
   Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
   Everyone : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Every Trainee`),
-}
+});
 
 const BLOCKLIST = [
   `@24thf9vivimassimple.com.ar`,
