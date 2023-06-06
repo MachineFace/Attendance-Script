@@ -13,17 +13,27 @@ class FuckOffAsAService {
     something : something = `Eat it`,
     behavior : behavior = `Always asking questions`,
   }) {
+    /** @private */
     this.root = `https://foass.1001010.com`;     // `http://foaas.com`
+    /** @private */
     this.username = username;
+    /** @private */
     this.name = name;
+    /** @private */
     this.company = company;
+    /** @private */
     this.tool = tool;
+    /** @private */
     this.something = something;
+    /** @private */
     this.behavior = behavior;
+    /** @private */
     this.reference = `http://google.com`;
+    /** @private */
     this.endpoints = this._Endpoints();
+    /** @private */
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
-
+    /** @private */
     this.params = {
       "method" : "GET",
       "headers" : { "authorization" : "basic ", "content-type" : "application/json"},
@@ -64,7 +74,7 @@ class FuckOffAsAService {
    * Get Random Fact
    * @return {string} random fact
    */
-  async GetRandom () {
+  async GetRandom() {
     const repo = this.randomEndpoint;
     try {
       const response = await UrlFetchApp.fetch(this.root + repo, this.params);
@@ -76,6 +86,7 @@ class FuckOffAsAService {
       return parsed;
     } catch(err) {
       console.error(`"GetRandom()" failed : ${err}`);
+      return 1;
     }
   }
 

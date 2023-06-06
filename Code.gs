@@ -38,8 +38,8 @@ const OnChange = async (e) => {
     console.info(`Setting Random Fact....`);
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
   } else if(name && absent == true) {
-    console.info(`Skipping FuckOff....`);
-    // SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    // console.info(`Skipping FuckOff....`);
+    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
   } else {
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
     // SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, thisRow, undefined);
@@ -49,14 +49,6 @@ const OnChange = async (e) => {
 }
 
 
-
-const _tt = () => {
-  // let test = SHEETS.Main;
-  let test = OTHERSHEETS.Logger
-  if(Object.values(OTHERSHEETS).includes(test)) console.info(`Found sheet ${test.getSheetName()}`);
-  // else if(Object.values(SHEETS).includes(test)) console.info(`Found sheet ${test.getSheetName()}`);
-  else console.info(`No match....`)
-}
 
 
 
