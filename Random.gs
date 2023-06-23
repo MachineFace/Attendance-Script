@@ -29,6 +29,7 @@ class RandomFacts {
       return content;
     } catch(err) {
       console.error(`"UselessFact()" failed : ${err}`);
+      return 1;
     }
      
   }
@@ -65,7 +66,7 @@ class RandomFacts {
    * @param {string} fact
    * @return {string} newfact
    */
-  async _CheckFactRecursively (fact) {
+  async _CheckFactRecursively(fact) {
     const index = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
       .filter(Boolean)
       .indexOf(fact);

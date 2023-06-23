@@ -10,7 +10,6 @@ class BCourses {
     this.root = `https://bcourses.berkeley.edu/courses/1353091`;
     this.id = 5508592;
     this.name = `Cody Glen`;
-    this.writer = new WriteLogger();
     // const repo = `/gradebook`;
   }
 
@@ -30,11 +29,11 @@ class BCourses {
     // POST
     const html = await UrlFetchApp.fetch(this.root + repo, params);
     const responseCode = html.getResponseCode();
-    this.writer.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
+    Log.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
 
     if(responseCode == 200){
       const response = html.getContentText();
-      this.writer.Info(`Response ---> : ${JSON.stringify(response)}`);
+      Log.Info(`Response ---> : ${JSON.stringify(response)}`);
     }
 
     return {
@@ -63,10 +62,10 @@ class BCourses {
     // GET
     const html = await UrlFetchApp.fetch(this.root + repo, params);
     const responseCode = html.getResponseCode();
-    this.writer.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
+    Log.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
 
     if(responseCode == 200) {
-      this.writer.Info(`Response ---> : ${JSON.stringify(html.getContentText())}`);
+      Log.Info(`Response ---> : ${JSON.stringify(html.getContentText())}`);
     }
     return {
       responseCode : html.getResponseCode(),
@@ -108,10 +107,10 @@ class BCourses {
     // GET
     const html = await UrlFetchApp.fetch(address, params);
     const responseCode = html.getResponseCode();
-    this.writer.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
-    this.writer.Info(html.getContentText())
+    Log.Debug(`Response Code ---> : ${responseCode} : ${RESPONSECODES[responseCode]}`);
+    Log.Info(html.getContentText())
     if(responseCode < 400) {
-      this.writer.Info(`Response ---> : ${JSON.stringify(html.getContentText())}`);
+      Log.Info(`Response ---> : ${JSON.stringify(html.getContentText())}`);
     }
     return {
       responseCode : html.getResponseCode(),
@@ -128,6 +127,48 @@ const _testbCourses = () => {
   b.Login();
 }
 
+
+
+
+
+// Configure the service
+const GetBCoursesService = () => {
+  const service = OAuth2.createService(`bCourses`)
+    .setAuthorizationBaseUrl(PropertiesService.getScriptProperties().getProperty(`BCOURSES_ROOT`))
+    .setTokenUrl(PropertiesService.getScriptProperties().getProperty(`BCOURSES_ROOT`) + `login/oauth2/`)
+    .setClientId(PropertiesService.getScriptProperties().getProperty(`BCOURSES_USER`))
+    .setClientSecret(PropertiesService.getScriptProperties().getProperty(`BCOURSES_PASS`))
+    .setCallbackFunction((request) => {
+      const service = GetBCoursesService();
+      const isAuthorized = service.handleCallback(request);
+      if (isAuthorized) { 
+        return HtmlService
+          .createTemplateFromFile("auth_success")
+          .evaluate();
+      } else {
+        return HtmlService
+          .createTemplateFromFile("auth_error")
+          .evaluate();
+      }
+    })
+    .setPropertyStore(PropertiesService.getUserProperties())
+    .setCache(CacheService.getUserCache())
+    .setLock(LockService.getUserLock())
+    // .setScope('user-library-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private');
+  // if (!service.hasAccess()) {
+  //   throw new Error('Error: Missing bCourses authorization.');
+  // }
+  console.info(`Access: ${service.hasAccess()}`);
+  console.info(service)
+  return service;
+}
+
+// Logs the redirect URI to register. You can also get this from File > Project Properties
+const GetRedirectUri = () => {
+  const redirectURI = GetBCoursesService().getRedirectUri();
+  console.log(redirectURI);
+  return redirectURI;
+}
 
 
 

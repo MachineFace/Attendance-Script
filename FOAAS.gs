@@ -34,12 +34,6 @@ class FuckOffAsAService {
     /** @private */
     this.randomEndpoint = this.endpoints[Math.floor(Math.random() * this.endpoints.length)];
     /** @private */
-    this.params = {
-      "method" : "GET",
-      "headers" : { "authorization" : "basic ", "content-type" : "application/json"},
-      "content-type" : "application/json",
-      "muteHttpExceptions" : true,
-    };
   }
 
   /** @private */
@@ -69,15 +63,21 @@ class FuckOffAsAService {
     ]
   }
 
-
   /**
    * Get Random Fact
    * @return {string} random fact
    */
   async GetRandom() {
     const repo = this.randomEndpoint;
+    const params = {
+      method : "GET",
+      headers : { "authorization" : "basic " },
+      contentType : "application/json",
+      muteHttpExceptions : true,
+    }
+
     try {
-      const response = await UrlFetchApp.fetch(this.root + repo, this.params);
+      const response = await UrlFetchApp.fetch(this.root + repo, params);
       const responseCode = response.getResponseCode();
       if (responseCode !== 200) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
       const content = response.getContentText();
@@ -96,16 +96,14 @@ class FuckOffAsAService {
    * @param {string} html
    * @return {{}} {title : string, subtitle : string}
    */
-  _Parse (content) {
+  _Parse(content) {
     content = content.toString();
     const titleStart = content.search(`<h1>`);
     const titleEnd = content.search(`</h1>`);
     const subStart = content.search(`<em>`);
     const subEnd = content.search(`</em>`);
-    let title = content.substring(titleStart + 4, titleEnd);
-    title = decodeURI(title);
-    const sub = content.substring(subStart + 4, subEnd);
-    // console.info(`Title : ${title}, Subtitle : ${sub}`);
+    const title = decodeURI(content.substring(titleStart + 4, titleEnd));
+    const sub = decodeURI(content.substring(subStart + 4, subEnd));
     return {
       title : title,
       subtitle : sub,

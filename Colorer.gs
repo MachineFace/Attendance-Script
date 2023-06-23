@@ -76,65 +76,64 @@ const SetConditionalFormatting = () => {
  * Set Row colors
  * @NOTIMPLEMENTED
  */
-/** 
 class Colorer {
-  constructor({thisRow = 1}) {
-    this.thisRow = thisRow;
-    this.writer = new WriteLogger();
+  constructor({ row : row = 2 }) {
+    /** @private */
+    this.row = row;
   }
 
+  /**
+   * Set Color
+   */
   SetColor() {
-    const wholerow = SHEETS.Main.getRange(this.thisRow, 1, 1, SHEETS.Main.getLastColumn());
-    const present = GetByHeader(SHEETS.Main, HEADERNAMES.present, this.thisRow);
-    const online = GetByHeader(SHEETS.Main, HEADERNAMES.online, this.thisRow);
-    const entered = GetByHeader(SHEETS.Main, HEADERNAMES.bCourses, this.thisRow);
-    const absent = GetByHeader(SHEETS.Main, HEADERNAMES.absent, this.thisRow);
+    const wholerow = SHEETS.Main.getRange(this.row, 1, 1, SHEETS.Main.getLastColumn());
+    const { date, equipment, name, present, online, bCourses, absent, random, row } = GetRowData(this.row);
 
     try {
-      if(present == true && online == true && entered == true) {
+      if(present && online && bCourses) {
         wholerow
           .setFontColor(COLORS.green) 
           .setBackground(COLORS.green_light);
-      }
-      else if(present == true && online == true && entered == false) {
+      } else if(present && online && !bCourses) {
         wholerow
           .setFontColor(COLORS.orange_dark) 
           .setBackground(COLORS.orange_light); 
-      }
-      else if(present == false && online == false && entered == true) {
+      } else if(!present && !online && bCourses) {
         wholerow
           .setFontColor(COLORS.yellow)  
           .setBackground(COLORS.yellow_light);
-      }
-      else if(present == false && online == true && entered == false) {
+      } else if(!present && online && !bCourses) {
         wholerow
           .setFontColor(COLORS.red_dark_1)  
           .setBackground(COLORS.yellow_light);
-      }
-      else if(present == true && online == false) {
+      } else if(present && !online) {
         wholerow
           .setFontColor(COLORS.red_dark_1)
           .setBackground(COLORS.red_light); 
-      }
-      else if(absent == true) {
-        SHEETS.Main.getRange(this.thisRow, 4).setValue("FALSE");
+      } else if(!present && !online && !bCourses && absent) {
+        SHEETS.Main.getRange(this.row, 4).setValue("FALSE");
         wholerow
           .setFontColor(COLORS.grey) 
           .setBackground(COLORS.grey_light);
-      }
-      else {
+      } else if(absent) {
+        SHEETS.Main.getRange(this.row, 4).setValue("FALSE");
+        wholerow
+          .setFontColor(COLORS.grey) 
+          .setBackground(COLORS.grey_light);
+      } else {
         wholerow
           .setFontColor(COLORS.unset) 
           .setBackground(COLORS.unset)
-        this.writer.Info(`Unset Colors`);
+        Log.Info(`Unset Colors`);
       }
     } catch(err) {
-      this.writer.Error(`${err} : Couldn't change colors`);
+      Log.Error(`${err} : Couldn't change colors`);
+      return 1;
     }
   }
 }
 
-const _testColor = () => new Colorer({thisRow : 794}).SetColor();
-*/
+const _testColor = () => new Colorer({row : 794}).SetColor();
+
 
 

@@ -1,10 +1,6 @@
 
 
-
-
-
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Return the value of a cell by column name and row number
  * @param {sheet} sheet
  * @param {string} colName
@@ -17,13 +13,12 @@ const GetByHeader = (sheet, columnName, row) => {
     let col = data[0].indexOf(columnName);
     if (col != -1) return data[row - 1][col];
   } catch (err) {
-    console.error(`"GetByHeader()" failed : ${err}, Sheet: ${sheet} Col Name specified: ${columnName} Row: ${row}`);
+    console.error(`"GetByHeader()" failed : ${err}`);
+    return 1;
   }
 };
 
-
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Return the values of a column by the name
  * @param {sheet} sheet
  * @param {string} colName
@@ -40,14 +35,12 @@ const GetColumnDataByHeader = (sheet, columnName) => {
     colData.splice(0, 1);
     if (col != -1) return colData;
   } catch (err) {
-    console.error(`${err} : GetByHeader failed - Sheet: ${sheet} Col Name specified: ${columnName}`);
+    console.error(`"GetColumnDataByHeader()" failed : ${err}`);
+    return 1;
   }
 };
 
-
-
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Set the value of a cell by column name and row number
  * @param {sheet} sheet
  * @param {string} colName
@@ -62,14 +55,14 @@ const SetByHeader = (sheet, columnName, row, val) => {
     const data = sheet.getDataRange().getValues();
     const col = data[0].indexOf(columnName) + 1;
     sheet.getRange(row, col).setValue(val);
+    return 0;
   } catch (err) {
-    console.error(`${err} : setByHeader failed - Sheet: ${sheet} Row: ${row} Col: ${col} Value: ${val}`);
+    console.error(`"SetByHeader()" failed : ${err}`);
+    return 1;
   }
 }
 
-
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Return the values of a row by the number
  * @param {sheet} sheet
  * @param {number} row
@@ -91,12 +84,10 @@ const GetRowData = (row) => {
     console.info(dict);
     return dict;
   } catch (err) {
-    console.error(`${err} : GetRowData failed - Sheet: ${SHEETS.Main.getSheetName()} Row: ${row}`);
+    console.error(`"GetRowData()" failed : ${err}`);
+    return 1;
   }
 }
-
-
-
 
 /**
  * Check if this sheet is forbidden
@@ -121,9 +112,6 @@ const CheckSheetIsForbidden = (someSheet) => {
   }
 }
 
-
-
-
 /**
  * Helper Method for TitleCasing Names
  * @param {string} string
@@ -140,7 +128,12 @@ const TitleCase = (str) => {
   return str.join(' ');
 }
 
-
+/**
+ * Find Missing Elements in Array
+ * @param {[]} array 1
+ * @param {[]} array 2
+ * @return {[]} difference
+ */
 const FindMissingElementsInArrays = (array1, array2) => {
   let indexes = [];
   array1.forEach( item => {
@@ -164,7 +157,6 @@ const ValidateEmail = (email) => {
 
 
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Find an index in an array
  * @param {any} search
  * @returns {int} index
@@ -177,7 +169,6 @@ Array.prototype.findIndex = (search) => {
 };
 
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Test if value is a date and return true or false
  * @param {date} d
  * @returns {boolean} b
@@ -194,29 +185,31 @@ const isValidDate = (d) => {
  */
 const datetimeToDate = (d) => new Date(d.getYear(), d.getMonth(), d.getDate());
 
-
-
-
 /**
- * ----------------------------------------------------------------------------------------------------------------
  * Set validation
  * @TRIGGERED - Once a month
  */
 const SetValidationRules = () => {
-  console.warn(`Setting Validation Rules......`);
-  const rule = SpreadsheetApp
-    .newDataValidation()
-    .requireValueInList(Object.values(TYPES), true)
-    .build();
-  SHEETS.Main.getRange(2, 2, SHEETS.Main.getMaxRows(), 1).setDataValidation(rule);
-  
-  // True false validation
-  const setCheckbox = SpreadsheetApp
-    .newDataValidation()
-    .requireCheckbox()
-    .build();
-  SHEETS.Main.getRange(2, 4, SHEETS.Main.getLastRow(), 4).setDataValidation(setCheckbox);
-  console.warn(`Validation Rules Set......`);
+  try {
+    console.warn(`Setting Validation Rules......`);
+    const rule = SpreadsheetApp
+      .newDataValidation()
+      .requireValueInList(Object.values(TYPES), true)
+      .build();
+    SHEETS.Main.getRange(2, 2, SHEETS.Main.getMaxRows(), 1).setDataValidation(rule);
+    
+    // True false validation
+    const setCheckbox = SpreadsheetApp
+      .newDataValidation()
+      .requireCheckbox()
+      .build();
+    SHEETS.Main.getRange(2, 4, SHEETS.Main.getLastRow(), 4).setDataValidation(setCheckbox);
+    console.warn(`Validation Rules Set......`);
+    return 0;
+  } catch(err) {
+    console.error(`"SetValidationRules()" failed : ${err}`);
+    return 1;
+  }
 }
 
 

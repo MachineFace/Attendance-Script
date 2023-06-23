@@ -34,15 +34,14 @@ const OnChange = async (e) => {
   name && !date ? SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
 
   // Add a Random Fact
-  if(name && present == true && online == true && bCourses == true && absent == false) {
+  if(name && present && online && bCourses && !absent) {
     console.info(`Setting Random Fact....`);
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
-  } else if(name && absent == true) {
+  } else if(name && absent) {
     // console.info(`Skipping FuckOff....`);
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
   } else {
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
-    // SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, thisRow, undefined);
   }
 
   

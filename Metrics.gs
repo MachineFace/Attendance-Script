@@ -14,7 +14,7 @@ class Calculate {
   }
 
   /** @private */
-  _CountCategorical (list) {
+  _CountCategorical(list) {
     let count = {};
     list.forEach( key => count[key] = ++count[key] || 1);
     return count;
@@ -31,7 +31,6 @@ class Calculate {
         if(Object.values(TYPES).includes(type)) categories.push(type);
       });
     
-
     let occurrences = categories.reduce( (acc, curr) => {
       return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
     }, {});
@@ -156,8 +155,7 @@ class Calculate {
    * Student Distribution
    */
   static StudentDistribution() {
-    let names = []
-      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
+    let names = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
       .filter(Boolean)
       .filter(x => x != `Semester Total`)
       .map(x => x = x.toLowerCase());
@@ -209,8 +207,7 @@ class Calculate {
    * @NOTIMPLEMENTED
    */
   static _ListAllTrainees() {
-    let names = []
-      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name))
+    let names = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
       .filter(Boolean)
       .filter(x => x != `Semester Total`)
       .map(x => x = x.toLowerCase());
@@ -225,8 +222,7 @@ class Calculate {
    */
   static SumCategories() {
     let count = {};
-    let types = []
-      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
+    let types = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
       .filter(Boolean);
 
     let countFunc = (keys) => {

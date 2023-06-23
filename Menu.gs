@@ -6,7 +6,7 @@ const PopupCategoryTrained = async () => {
   const ui = await SpreadsheetApp.getUi();
   const counts = Calculate.CountEachCategoryTrained();
   ui.alert(
-    `${ServiceName}`,
+    ServiceName,
     `${JSON.stringify(counts, null, 3)}`,
     ui.ButtonSet.OK
   );
@@ -21,7 +21,7 @@ const PopupCountAllTrainedUsers = async () => {
   const absent = Calculate.CountAbsent();
   const present = Calculate.CountPresent();
   ui.alert(
-    `${ServiceName}`,
+    ServiceName,
     `Number of Trained Users ----> ${counts}\n` + 
     `Absent ----> ${absent}\n` + 
     `Present ----> ${present}\n`,
@@ -36,7 +36,7 @@ const PopupRandomFact = async () => {
   const ui = await SpreadsheetApp.getUi();
   const fact = await RandomFacts.UselessFact();
   ui.alert(
-    `${ServiceName}`,
+    ServiceName,
     `${fact}`,
     ui.ButtonSet.OK
   );
