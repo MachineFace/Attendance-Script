@@ -8,39 +8,38 @@ const _gasTMetricsTesting = async () => {
     eval(UrlFetchApp.fetch('https://raw.githubusercontent.com/huan/gast/master/src/gas-tap-lib.js').getContentText())
   } 
   const test = new GasTap();
-  const calc = new CalculateMetrics();
 
   await test(`CountEachCategoryTrained`, t => {
-    const x = calc.CountEachCategoryTrained();
+    const x = Calculate.CountCategories();
     t.notThrow(() => x,`CountEachCategoryTrained SHOULD NOT throw error. ${JSON.stringify(x)}`);
     // t.equal(isNaN(y), true, `SumStatuses SHOULD return NaN for forbidden sheet: ${y}`);
   });
 
   await test(`CountPresent`, t => {
-    const x = calc.CountPresent();
+    const x = Calculate.CountPresent();
     t.notThrow(() => x,`CountPresent SHOULD NOT throw error. ${x}`);
     t.equal(!isNaN(x), true, `CountPresent SHOULD return a number ${x}`);
   });
 
   await test(`CountAbsent`, t => {
-    const x = calc.CountAbsent();
+    const x = Calculate.CountAbsent();
     t.notThrow(() => x,`CountAbsent SHOULD NOT throw error: ${x}`);
     t.equal(!isNaN(x), true, `CountAbsent SHOULD return a number: ${x}`);
   });
 
   await test(`CountAllTrainedUsers`, t => {
-    const x = calc.CountAllTrainedUsers();
+    const x = Calculate.CountAllTrainedUsers();
     t.notThrow(() => x,`CountAllTrainedUsers SHOULD NOT throw error: ${x}`);
     t.equal(!isNaN(x), true, `CountAllTrainedUsers SHOULD return a number: ${x}`);
   });
 
   await test(`Calc Distribution`, (t) => {
-    const x = calc.CalculateDistribution();
+    const x = Calculate.CalculateDistribution();
     t.notEqual(x, undefined || null, `Distribution should not return undefined: ${x.slice(0, 3)}`);
   });
 
   await test(`SumCategories`, (t) => {
-    const x = calc.SumCategories();
+    const x = Calculate.SumCategories();
     t.notEqual(x, undefined || null, `SumCategories should not return undefined: ${JSON.stringify(x)}`);
   });
   
