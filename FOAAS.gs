@@ -114,7 +114,7 @@ class FuckOffAsAService {
 }
 
 
-const _testFuckOff = async () => await new FuckOffAsAService({ name : `Mike Roch`}).GetRandom();
+const _testFuckOff = async () => await new FuckOffAsAService({ name : `Merc Wahlberg`}).GetRandom();
 
 const DoFuckOff = async () => {
   const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);

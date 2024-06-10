@@ -31,7 +31,7 @@ const OnChange = async (e) => {
   const { date, equipment, name, present, online, bCourses, absent, random, row } = GetRowData(thisRow);
   
   // Set Date
-  name && !date ? SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
+  // name && !date ? SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
 
   // Add a Random Fact
   if(name && present && online && bCourses && !absent) {
@@ -39,7 +39,7 @@ const OnChange = async (e) => {
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
   } else if(name && absent) {
     // console.info(`Skipping FuckOff....`);
-    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    // SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
   } else {
     SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
   }

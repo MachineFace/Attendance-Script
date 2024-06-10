@@ -213,7 +213,11 @@ const SetValidationRules = () => {
 }
 
 
-
+/**
+ * Sleep function to wait for execution
+ * @param {number} milliseconds
+ */
+const Sleep = (ms) => Utilities.sleep(ms);
 
 
 

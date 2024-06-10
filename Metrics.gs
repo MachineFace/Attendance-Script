@@ -38,6 +38,74 @@ class Calculate {
     return occurrences; 
   }
 
+  static PrintCountsPerMonth() {
+    const counts = this.CountPerMonth();
+    console.info(counts)
+    Object.entries(counts).forEach(entry => {
+      const year = Number(entry[0].split("-")[0]);
+      const month = Number(entry[0].split("-")[1]);
+      const value = Number(entry[1]);
+
+      const row = year - 2018 + 2;
+      const col = month + 1;
+      // console.info(`Row: ${row}, Year: ${year},Col: ${col}, Mo: ${month}, Value: ${value}`);
+      OTHERSHEETS.CountsPerMonth.getRange(row, col, 1, 1).setValue(value);
+    })
+  }
+
+  static CountPerMonth () {
+    let dates = [];
+    GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)
+      .filter(Boolean)
+      .forEach( date => {
+        if(date instanceof(Date)) {
+          let monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format as "YYYY-M"
+          dates.push(monthYear);
+        }
+      });
+    let occurrences = dates.reduce( (acc, curr) => {
+      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+    }, {});
+    const modified = this._fillMissingMonthsWithZero(occurrences);
+    // console.info(modified);
+    return modified;
+  }
+
+  /** @private */
+  static _fillMissingMonthsWithZero(dateCounts) {
+    const filledDateCounts = { ...dateCounts };
+    const years = new Set();
+
+    // Extract unique years from the dates
+    Object.keys(dateCounts).forEach(date => {
+      const [year] = date.split("-");
+      years.add(year);
+    });
+
+    // Generate all months for each year and add to the dateCounts object if missing
+    years.forEach(year => {
+      for (let month = 1; month <= 12; month++) {
+        const monthYear = `${year}-${month}`;
+        if (!filledDateCounts[monthYear]) filledDateCounts[monthYear] = 0;
+      }
+    });
+
+    // Sort the object keys
+    const sortedKeys = Object.keys(filledDateCounts).sort((a, b) => {
+      const [yearA, monthA] = a.split("-").map(Number);
+      const [yearB, monthB] = b.split("-").map(Number);
+      return yearA === yearB ? monthA - monthB : yearA - yearB;
+    });
+
+    // Create a new sorted object
+    const sortedDateCounts = {};
+    sortedKeys.forEach(key => {
+      sortedDateCounts[key] = filledDateCounts[key];
+    });
+
+    return sortedDateCounts;
+  }
+
   /**
    * Count User Types
    * @returns {object} types, count
@@ -248,10 +316,11 @@ const Metrics = () => {
   Calculate.CalculateDistribution();
   Calculate.PrintTopTen();
   Calculate.PrintAllTrainees();
+  Calculate.PrintCountsPerMonth();
 }
 
 const _testMetrics = () => {
-  Calculate.PrintAllTrainees();
+  Calculate.PrintCountsPerMonth();
 }
 
 

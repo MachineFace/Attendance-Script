@@ -130,9 +130,11 @@ const SHEETS = Object.freeze({
 const OTHERSHEETS = Object.freeze({
   Metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
   Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
+  Chart2 : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart2`),
   HaasUsage : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Haas Usage`),
   Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
   Everyone : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Every Trainee`),
+  CountsPerMonth : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerMonth`),
 });
 
 const BLOCKLIST = [
