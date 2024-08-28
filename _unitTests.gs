@@ -34,7 +34,7 @@ const _gasTMetricsTesting = async () => {
   });
 
   await test(`Calc Distribution`, (t) => {
-    const x = Calculate.CalculateDistribution();
+    const x = Calculate.GetDistribution();
     t.notEqual(x, undefined || null, `Distribution should not return undefined: ${x.slice(0, 3)}`);
   });
 

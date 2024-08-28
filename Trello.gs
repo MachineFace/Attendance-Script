@@ -86,9 +86,9 @@ const CreateTrelloService = () => {
     .setPropertyStore(PropertiesService.getUserProperties())
     .setCache(CacheService.getUserCache())
     .setLock(LockService.getUserLock())
-    // .setScope('user-library-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private');
+    .setScope('user-library-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private');
   // if (!service.hasAccess()) {
-  //   throw new Error('Error: Missing bCourses authorization.');
+  //   throw new Error('Error: Missing trello authorization.');
   // }
   console.info(`Access: ${service.hasAccess()}`);
   console.info(service)

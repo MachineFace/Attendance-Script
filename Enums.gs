@@ -135,6 +135,7 @@ const OTHERSHEETS = Object.freeze({
   Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
   Everyone : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Every Trainee`),
   CountsPerMonth : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerMonth`),
+  CountsPerWeek : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerWeek`),
 });
 
 const BLOCKLIST = [

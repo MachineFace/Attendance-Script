@@ -137,21 +137,29 @@ const PopupCleanOutJPSNotifications = async () => {
  * Builds our JPS Menu and sets functions.
  */
 const BarMenu = () => {
-  SpreadsheetApp.getUi()
+  const ui = SpreadsheetApp.getUi();
+  ui
     .createMenu(`${ServiceName} Menu`)
-    .addItem(`💩 Go to Main Tab`, `OpenMainTab`)
-    .addItem(`💩 Show Sidebar`, `ShowSidebar`)
-    .addItem(`💩 Generate Random Fact`, `PopupRandomFact`)
-    .addItem(`💩 Fuck Off as a Service`, `PopupFOff`)
+    .addItem(`Show Sidebar`, `ShowSidebar`)
+    .addItem(`Jump to Main`, `OpenMainTab`)
     .addSeparator()
-    .addItem(`💩 Count Categories Trained`, `PopupCategoryTrained`)
-    .addItem(`💩 Count All Trained Users`, `PopupCountAllTrainedUsers`)
+    .addSubMenu(
+      ui.createMenu(`Metrics`)
+        .addItem(`Recompute Metrics`, `Metrics`)
+        .addItem(`Count Categories Trained`, `PopupCategoryTrained`)
+        .addItem(`Count All Trained Users`, `PopupCountAllTrainedUsers`)
+    )
     .addSeparator()
-    .addItem(`💩 Help`, `PopupHelp`)
+    .addSubMenu(
+      ui.createMenu(`💩 Fun`)
+        .addItem(`Get Random Fact`, `PopupRandomFact`)
+        .addItem(`Fuck Off`, `PopupFOff`)
+    )
     .addSeparator()
-    .addItem(`💩 Recompute Metrics`, `Metrics`)
+    .addItem(`Delete Old Emails`, `PopupCleanOutJPSNotifications`)
     .addSeparator()
-    .addItem(`💩 Delete Old Emails`, `PopupCleanOutJPSNotifications`)
+    .addItem(`Help`, `PopupHelp`)
+    .addSeparator()
     .addToUi();
 };
 

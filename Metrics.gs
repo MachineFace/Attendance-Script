@@ -135,21 +135,14 @@ class Calculate {
    */
   static PrintTypes() {
     const types = Calculate.CountTypes();
-
-    OTHERSHEETS.Metrics.getRange(3, 3).setValue(`Haas Mini Mill Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(3, 4).setValue(types[`Haas Mini Mill`]);
-
-    OTHERSHEETS.Metrics.getRange(4, 3).setValue(`Ultimaker Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(4, 4).setValue(types['Type A / Ultimakers']);
-
-    OTHERSHEETS.Metrics.getRange(5, 3).setValue(`Tormach Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(5, 4).setValue(types[`Tormach`]);
-
-    OTHERSHEETS.Metrics.getRange(6, 3).setValue(`Fablight Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(6, 4).setValue(types[`FabLight`]);
-
-    OTHERSHEETS.Metrics.getRange(7, 3).setValue(`Laser Trainings Completed:`);
-    OTHERSHEETS.Metrics.getRange(7, 4).setValue(types['Laser (Special Session)'] + types['Laser (for PREP)'] + types['Laser (for TPREP)']);
+    const values = [
+      [ `Haas Mini Mill Trainings Completed:`, types[`Haas Mini Mill`] ],
+      [ `Ultimaker Trainings Completed:`, types['Type A / Ultimakers'] ],
+      [ `Tormach Trainings Completed:`, types[`Tormach`] ],
+      [ `Fablight Trainings Completed:`, types[`FabLight`] ],
+      [ `Laser Trainings Completed:`, types[`Laser Cutter`] ],
+    ];
+    OTHERSHEETS.Metrics.getRange(3, 3, values.length, 2).setValues(values);
   }
 
 
@@ -162,8 +155,7 @@ class Calculate {
       .filter(Boolean)
       .length;
     console.info(`Total Trained : ${total}`);
-    OTHERSHEETS.Metrics.getRange(8, 3).setValue(`Total Trained:`);
-    OTHERSHEETS.Metrics.getRange(8, 4).setValue(total);
+    OTHERSHEETS.Metrics.getRange(8, 3, 1, 2).setValues([[ `Total Trained:`, total ]]);
     return total;
   }
 
@@ -198,7 +190,7 @@ class Calculate {
   /**
    * Distribution
    */
-  static CalculateDistribution() { 
+  static GetDistribution() { 
     let types = []
       .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
       .filter(Boolean)
@@ -265,8 +257,8 @@ class Calculate {
    */
   static PrintAllTrainees() {
     let names = Calculate.StudentDistribution();
-    OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
     OTHERSHEETS.Everyone.getRange(1, 5).setValue(`Total Trained: ${names.length}`);
+    OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
   }
 
   /**
@@ -287,16 +279,20 @@ class Calculate {
 
   /**
    * Sum Categories
+   * @DEFUNCT
    */
   static SumCategories() {
     let count = {};
     let types = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter(x => !x.includes(`Test`))
+      .filter(x => !x.includes(`Spring`))
+      .filter(x => !x.includes(`Summer`))
+      .filter(x => !x.includes(`Fall`))
+      .filter(x => !x.includes(`Workshop`))
+      .filter(x => !x.includes(`Conquering`));
 
-    let countFunc = (keys) => {
-      count[keys] = ++count[keys] || 1;
-    }
-    types.forEach(countFunc);
+    types.forEach(key => count[key] = ++count[key] || 1);
     for(const [key, value] of Object.entries(count)) {
       console.warn(`${key} : ${value}`);
     }
@@ -313,14 +309,14 @@ const Metrics = () => {
   Calculate.CountPresent();
   Calculate.CountAbsent();
   Calculate.CountAllTrainedUsers();
-  Calculate.CalculateDistribution();
+  Calculate.GetDistribution();
   Calculate.PrintTopTen();
   Calculate.PrintAllTrainees();
   Calculate.PrintCountsPerMonth();
 }
 
 const _testMetrics = () => {
-  Calculate.PrintCountsPerMonth();
+  Calculate.CountCategories();
 }
 
 
