@@ -4,7 +4,6 @@
 try {
   PropertiesService.getScriptProperties()
     .setProperties({
-      SERVICENAME : `🦤 AttendanceBot 🦤`,
       BCOURSES_ID : 5508592,
       BCOURSES_ROOT : `https://bcourses.berkeley.edu/api/v1/`,
       BCOURSES_COURSE : `courses/1353091`,

@@ -6,7 +6,7 @@ const PopupCategoryTrained = async () => {
   const ui = await SpreadsheetApp.getUi();
   const counts = Calculate.CountEachCategoryTrained();
   ui.alert(
-    ServiceName,
+    SERVICE_NAME,
     `${JSON.stringify(counts, null, 3)}`,
     ui.ButtonSet.OK
   );
@@ -21,7 +21,7 @@ const PopupCountAllTrainedUsers = async () => {
   const absent = Calculate.CountAbsent();
   const present = Calculate.CountPresent();
   ui.alert(
-    ServiceName,
+    SERVICE_NAME,
     `Number of Trained Users ----> ${counts}\n` + 
     `Absent ----> ${absent}\n` + 
     `Present ----> ${present}\n`,
@@ -36,7 +36,7 @@ const PopupRandomFact = async () => {
   const ui = await SpreadsheetApp.getUi();
   const fact = await RandomFacts.UselessFact();
   ui.alert(
-    ServiceName,
+    SERVICE_NAME,
     `${fact}`,
     ui.ButtonSet.OK
   );
@@ -49,7 +49,7 @@ const PopupFOff = async () => {
   const ui = await SpreadsheetApp.getUi();
   const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom()
   ui.alert(
-    `${ServiceName}`,
+    `${SERVICE_NAME}`,
     `${fOff}`,
     ui.ButtonSet.OK
   );
@@ -100,7 +100,7 @@ const BuildHTMLHELP = () => {
  */
 const PopupHelp = () => {
   const ui = SpreadsheetApp.getUi();
-  const title = `${ServiceName}`;
+  const title = `${SERVICE_NAME}`;
   const htmlOutput = HtmlService.createHtmlOutput(BuildHTMLHELP())
     .setWidth(640)
     .setHeight(480);
@@ -114,7 +114,7 @@ const PopupCleanOutJPSNotifications = async () => {
   const ui = await SpreadsheetApp.getUi();
   const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
   const response = ui.alert(
-    `${ServiceName}`,
+    `${SERVICE_NAME}`,
     `Deleting all the old JPS Notification emails....`, 
     ui.ButtonSet.OK_CANCEL
   );
@@ -122,7 +122,7 @@ const PopupCleanOutJPSNotifications = async () => {
     CleanOutJPSNotifications();
   } else if (response == ui.Button.CANCEL) {
     ui.alert(
-      `${ServiceName}`,
+      `${SERVICE_NAME}`,
       `${fOff}`,
       ui.ButtonSet.OK
     )
@@ -139,7 +139,7 @@ const PopupCleanOutJPSNotifications = async () => {
 const BarMenu = () => {
   const ui = SpreadsheetApp.getUi();
   ui
-    .createMenu(`${ServiceName} Menu`)
+    .createMenu(`${SERVICE_NAME} Menu`)
     .addItem(`Show Sidebar`, `ShowSidebar`)
     .addItem(`Jump to Main`, `OpenMainTab`)
     .addSeparator()

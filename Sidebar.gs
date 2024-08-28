@@ -8,7 +8,7 @@ const ShowSidebar = async () => {
       template.evaluate()
         .setSandboxMode(HtmlService.SandboxMode.IFRAME)
         .getBlob()
-        .setName(`${ServiceName} Menu`)
+        .setName(`${SERVICE_NAME} Menu`)
       ).setWidth(400)
   ui.showSidebar(html);
 }

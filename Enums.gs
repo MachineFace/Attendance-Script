@@ -3,7 +3,7 @@
  * Code Enumerations
  */
 
-const ServiceName = `🦤 AttendanceBot 🦤`;
+const SERVICE_NAME = `🦤 AttendanceBot`;
 const DELETE_AFTER_DAYS = 90;
 
 const COLORS = Object.freeze({
