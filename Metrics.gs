@@ -13,72 +13,60 @@ class Calculate {
     return new Set(iterable).size;
   }
 
-  /** @private */
-  _CountCategorical(list) {
-    let count = {};
-    list.forEach( key => count[key] = ++count[key] || 1);
-    return count;
-  }
-
   /**
    * Count Categories
    */
   static CountCategories() {
     let categories = [];
-    GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
+    [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
       .filter(Boolean)
-      .forEach( type => {
+      .forEach(type => {
         if(Object.values(TYPES).includes(type)) categories.push(type);
       });
     
-    let occurrences = categories.reduce( (acc, curr) => {
-      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-    }, {});
-    console.info(occurrences);
+    let occurrences = Calculate.Distribution(categories);
     return occurrences; 
   }
 
+  /**
+   * Counts Per Month
+   */
   static PrintCountsPerMonth() {
-    const counts = this.CountPerMonth();
-    console.info(counts)
-    Object.entries(counts).forEach(entry => {
-      const year = Number(entry[0].split("-")[0]);
-      const month = Number(entry[0].split("-")[1]);
-      const value = Number(entry[1]);
+    const counts = Calculate.CountPerMonth();
+    counts.forEach( ([date, count], idx) => {
+      const year = Number(date.split("-")[0]) || new Date().getFullYear();
+      const month = Number(date.split("-")[1]) || new Date().getMonth();
+      const value = count || 0;
+      // console.info(`DATE: ${date}, YEAR: ${year}, MONTH: ${month}, COUNT: ${value}`);
 
       const row = year - 2018 + 2;
       const col = month + 1;
-      // console.info(`Row: ${row}, Year: ${year},Col: ${col}, Mo: ${month}, Value: ${value}`);
+      // console.info(`Row: ${row}, Year: ${year}, Col: ${col}, Mo: ${month}, Value: ${value}`);
       OTHERSHEETS.CountsPerMonth.getRange(row, col, 1, 1).setValue(value);
     })
   }
 
+  /**
+   * Count Per Month
+   */
   static CountPerMonth () {
     let dates = [];
-    GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)
+    [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)]
       .filter(Boolean)
-      .forEach( date => {
-        if(date instanceof(Date)) {
-          let monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format as "YYYY-M"
-          dates.push(monthYear);
-        }
+      .forEach(date => {
+        let d = new Date(date);
+        let monthYear = `${d.getFullYear()}-${d.getMonth() + 1}`; // Format as "YYYY-M"
+        dates.push(monthYear);
       });
-    let occurrences = dates.reduce( (acc, curr) => {
-      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-    }, {});
-    const modified = this._fillMissingMonthsWithZero(occurrences);
-    // console.info(modified);
-    return modified;
-  }
 
-  /** @private */
-  static _fillMissingMonthsWithZero(dateCounts) {
-    const filledDateCounts = { ...dateCounts };
-    const years = new Set();
+    let occurrences = Calculate.Distribution(dates);
+
+    let filledDateCounts = occurrences;
+    let years = new Set();
 
     // Extract unique years from the dates
-    Object.keys(dateCounts).forEach(date => {
-      const [year] = date.split("-");
+    occurrences.forEach(([date, count], idx) => {
+      const year = date && date.split("-")[0] || new Date().getFullYear();
       years.add(year);
     });
 
@@ -86,25 +74,22 @@ class Calculate {
     years.forEach(year => {
       for (let month = 1; month <= 12; month++) {
         const monthYear = `${year}-${month}`;
-        if (!filledDateCounts[monthYear]) filledDateCounts[monthYear] = 0;
+        const data = [ monthYear, 0 ];
+        let dates = filledDateCounts.map(x => x[0]);
+        if (!dates.includes(monthYear)) {
+          filledDateCounts.push([ monthYear, 0 ]);
+        }
       }
     });
 
-    // Sort the object keys
-    const sortedKeys = Object.keys(filledDateCounts).sort((a, b) => {
-      const [yearA, monthA] = a.split("-").map(Number);
-      const [yearB, monthB] = b.split("-").map(Number);
-      return yearA === yearB ? monthA - monthB : yearA - yearB;
-    });
+    const sorted = filledDateCounts
+      .sort((a, b) => new Date(a[0]) - new Date(b[0]))
 
-    // Create a new sorted object
-    const sortedDateCounts = {};
-    sortedKeys.forEach(key => {
-      sortedDateCounts[key] = filledDateCounts[key];
-    });
+    console.info(sorted);
+    return sorted;
 
-    return sortedDateCounts;
   }
+
 
   /**
    * Count User Types
@@ -112,7 +97,7 @@ class Calculate {
    */
   static CountTypes() {
     try {
-      let typeList = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)
+      let typeList = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
         .filter(Boolean)
         .filter(x => x != `Test`)
         .filter(x => !x.includes(`Spring`))
@@ -120,10 +105,7 @@ class Calculate {
         .filter(x => !x.includes(`Fall`))
         .filter(x => !x.includes(`Workshop`));
 
-      let occurrences = typeList.reduce( (acc, curr) => {
-        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-      }, {});
-      console.info(occurrences);
+      let occurrences = Calculate.Distribution(typeList);
       return occurrences;
     } catch(err) {
       console.error(`"CountTypes()" failed : ${err}`);
@@ -135,42 +117,68 @@ class Calculate {
    */
   static PrintTypes() {
     const types = Calculate.CountTypes();
+    const cleaned = types.reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+    }, {});
     const values = [
-      [ `Haas Mini Mill Trainings Completed:`, types[`Haas Mini Mill`] ],
-      [ `Ultimaker Trainings Completed:`, types['Type A / Ultimakers'] ],
-      [ `Tormach Trainings Completed:`, types[`Tormach`] ],
-      [ `Fablight Trainings Completed:`, types[`FabLight`] ],
-      [ `Laser Trainings Completed:`, types[`Laser Cutter`] ],
+      [ `Haas Mini Mill Trainings Completed:`, cleaned[`Haas Mini Mill`] ],
+      [ `Ultimaker Trainings Completed:`, cleaned['Type A / Ultimakers'] ],
+      [ `Tormach Trainings Completed:`, cleaned[`Tormach`] ],
+      [ `Fablight Trainings Completed:`, cleaned[`FabLight`] ],
+      [ `Laser Trainings Completed:`, cleaned[`Laser Cutter`] ],
     ];
     OTHERSHEETS.Metrics.getRange(3, 3, values.length, 2).setValues(values);
   }
 
-
+  /**
+   * Count Attendance
+   */
+  static CountAttentance() {
+    try {
+      let lastRow = SHEETS.Main.getLastRow();
+      let attendance = {
+        present : 0,
+        online : 0,
+        entered : 0,
+        absent : 0,
+      };
+      for(let i = 2; i < lastRow; i++) {
+        const { present, online, bCourses, absent, } = GetRowData(i);
+        if(present && online && !absent) {
+          attendance.present += 1;
+        } else if(present && online && bCourses && !absent) {
+          attendance.present += 1;
+        } else if(online) {
+          attendance.online += 1;
+        }else if(bCourses) {
+          attendance.entered += 1;
+        } else if(!present && absent) {
+          attendance.absent += 1;
+        } else if(absent) {
+          attendance.absent += 1;
+        }
+      }
+      console.info(JSON.stringify(attendance, null, 2));
+      return attendance;
+    } catch(err) {
+      console.error(`"CountAttentance()" failed: ${err}`);
+      return 1;
+    }
+  }
 
   /**
    * Count Present
    */
-  static CountPresent() {
-    let total = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present)
-      .filter(Boolean)
-      .length;
-    console.info(`Total Trained : ${total}`);
-    OTHERSHEETS.Metrics.getRange(8, 3, 1, 2).setValues([[ `Total Trained:`, total ]]);
-    return total;
+  static PrintAttendance() {
+    let { present, absent } = Calculate.CountAttentance();
+    let values = [
+      [ `Total Trained:`, present ],
+      [ `Total Absent:`, absent ],
+    ];
+    OTHERSHEETS.Metrics.getRange(8, 3, 2, 2).setValues(values);
   }
 
-  /**
-   * Count Absent
-   */
-  static CountAbsent() {
-    let absent = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent)
-      .filter(Boolean)
-      .length;  
-    console.info(`Total Absent : ${absent}`);
-    OTHERSHEETS.Metrics.getRange(9, 3).setValue(`Total Absent:`);
-    OTHERSHEETS.Metrics.getRange(9, 4).setValue(absent);
-    return absent;
-  }
 
   /**
    * Count All Trained
@@ -187,12 +195,12 @@ class Calculate {
     return count;
   }
 
+
   /**
    * Distribution
    */
-  static GetDistribution() { 
-    let types = []
-      .concat(...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment))
+  static GetTrainingTypeDistribution() { 
+    let types = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
       .filter(Boolean)
       .filter(x => !x.includes(`Spring`))
       .filter(x => !x.includes(`Summer`))
@@ -200,14 +208,7 @@ class Calculate {
       .filter(x => !x.includes(`Workshop`))
       .filter(x => !x.includes(`Conquering`));
 
-    let occurrences = types.reduce( (acc, curr) => {
-      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-    }, {});
-    let items = Object.keys(occurrences)
-      .map( key => [key, occurrences[key]])
-      .sort((first, second) => second[1] - first[1]);
-
-    console.info(`Distribution ----> ${items}`);
+    let items = Calculate.Distribution(types);
     return items;  
   }
 
@@ -219,15 +220,7 @@ class Calculate {
       .filter(Boolean)
       .filter(x => x != `Semester Total`)
       .map(x => x = x.toLowerCase());
-
-    let occurrences = names.reduce( (acc, curr) => {
-      return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-    }, {});
-    let items = Object.keys(occurrences).map((key) => [TitleCase(key), occurrences[key]]);
-    items.sort((first, second) => {
-      return second[1] - first[1];
-    });
-    // console.info(`Distribution ----> ${items}`);
+    let items = Calculate.Distribution(names);
     return items;  
   }
 
@@ -237,19 +230,12 @@ class Calculate {
   static PrintTopTen() {
     const distribution = Calculate.StudentDistribution()
       .slice(0, 11)
-    console.info(distribution);
 
-    OTHERSHEETS.Metrics.getRange(19, 3)
-      .setValue(`Top Ten Returning Trainees`)
-      .setTextStyle(SpreadsheetApp.newTextStyle().setBold(true).build())
-      .setHorizontalAlignment(`center`);
-    distribution.forEach((pair, index) => {
-      console.info(`${pair[0]} -----> ${pair[1]}`);
-      OTHERSHEETS.Metrics.getRange(20 + index, 2).setValue(index + 1); 
-      OTHERSHEETS.Metrics.getRange(20 + index, 3).setValue(pair[0]); 
-      OTHERSHEETS.Metrics.getRange(20 + index, 4).setValue(pair[1]); 
+    OTHERSHEETS.Metrics.getRange(1, 6, 1, 3).setValues([[ `Place`, `Top Ten Returning Trainees`, `# of Trainings Attended`, ]]);
+    distribution.forEach(([name, count], idx) => {
+      OTHERSHEETS.Metrics.getRange(2 + idx, 6, 1, 3).setValues([[ idx + 1, TitleCase(name), count, ]]); 
     });
-    OTHERSHEETS.Metrics.getRange(19, 2, 12, 3).setBackground(COLORS.grey);
+
   }
 
   /**
@@ -278,25 +264,297 @@ class Calculate {
   }
 
   /**
-   * Sum Categories
-   * @DEFUNCT
+   * --------------------------------------------------------------------------------------------------------------
    */
-  static SumCategories() {
-    let count = {};
-    let types = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
-      .filter(Boolean)
-      .filter(x => !x.includes(`Test`))
-      .filter(x => !x.includes(`Spring`))
-      .filter(x => !x.includes(`Summer`))
-      .filter(x => !x.includes(`Fall`))
-      .filter(x => !x.includes(`Workshop`))
-      .filter(x => !x.includes(`Conquering`));
 
-    types.forEach(key => count[key] = ++count[key] || 1);
-    for(const [key, value] of Object.entries(count)) {
-      console.warn(`${key} : ${value}`);
+  /**
+   * Calculate Distribution
+   * @param {Array} input array to calculate Distribution
+   * @returns {[string, number]} sorted list of users
+   */
+  static Distribution(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`List is empty: ${numbers.length}`);
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => item[1]);
+      else values = numbers;
+      const occurrences = values.reduce( (acc, curr) => {
+        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+      }, {});
+
+      let items = Object.keys(occurrences).map((key) => {
+        if (key != "" || key != undefined || key != null || key != " ") {
+          return [key, occurrences[key]];
+        }
+      });
+
+      items.sort((first, second) => second[1] - first[1]);
+      console.warn(`<<< DISTRIBUTION >>>`);
+      console.info(items);
+      return items;  
+    } catch(err) {
+      console.error(`"Distribution()" failed: ${err}`);
+      return 1;
     }
-    return count;
+  }
+
+
+  /**
+   * Calculate Standard Deviation
+   * @param {Array} array of keys and values: "[[key, value],[]...]"
+   * @returns {number} Standard Deviation
+   */
+  static StandardDeviation(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`List is empty: ${numbers.length}`);
+
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => item[1]);
+      else values = numbers;
+
+      const mean = Calculate.GeometricMean(values);
+      console.warn(`Mean = ${mean}`);
+
+      const s = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / values.length);
+      const standardDeviation = Math.abs(Number(s - mean).toFixed(3)) || 0;
+      console.warn(`Standard Deviation: +/-${standardDeviation}`);
+      return standardDeviation;
+    } catch(err) {
+      console.error(`"StandardDeviation()" failed : ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Z Scores for Each Distribution Entry
+   * @param {Array} distribution [[key, value], [key, value], ... ]
+   * @param {number} standard deviation
+   * @returns {Array} ZScored Entries [[key, value, score], [key, value, score], ... ]
+   */
+  static ZScore(distribution = [], stdDev = 0) {
+    try {
+      if(distribution.length < 2) throw new Error(`Distribution Empty: ${distribution.length}`);
+      const mean = Calculate.GeometricMean(distribution);
+
+      // Compute the Z-Score for each entry
+      const zScore = distribution.map(([key, value]) => {
+        const zScore = (value - mean) / stdDev;
+        return [key, value, zScore];
+      });
+      return zScore;
+    } catch(err) {
+      console.error(`"ZScore()" failed: ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Kurtosis
+   * Measures the "tailedness" of the data distribution.
+   * High kurtosis means more outliers; Low kurtosis means fewer outliers.
+   * @param {Array} distribution [[key, value], [key, value], ... ]
+   * @param {number} standard deviation
+   * @returns {number} Kurtosis Number
+   */
+  static Kurtosis(distribution = [], stdDev = 0) {
+    try {
+      if(distribution.length < 2) throw new Error(`Distribution Empty: ${distribution.length}`);
+
+      const mean = Calculate.GeometricMean(distribution);
+
+      // Calculate the fourth moment
+      const fourthMoment = distribution.reduce((acc, curr) => {
+        return acc + Math.pow(curr[1] - mean, 4);
+      }, 0) / distribution.length;
+
+      // Calculate variance (standard deviation squared)
+      const variance = Math.pow(stdDev, 2);
+
+      // Compute kurtosis
+      const kurtosis = fourthMoment / Math.pow(variance, 2);
+
+      // Excess kurtosis (subtract 3 to make kurtosis of a normal distribution zero)
+      const excessKurtosis = kurtosis - 3;
+
+      return excessKurtosis;
+    } catch(err) {
+      console.error(`"Kurtosis()" failed: ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Skewness
+   * Measures the asymmetry of the data distribution.
+   * Positive skew means a long right tail; Negative skew means a long left tail.
+   * @param {Array} distribution [[key, value], [key, value], ... ]
+   * @param {number} standard deviation
+   * @returns {number} Skewness Number
+   */
+  static Skewness(distribution = [], stdDev = 0) {
+    try {
+      // Calculate the mean of the distribution
+      const mean = Calculate.GeometricMean(distribution);
+
+      // Calculate the third moment
+      const thirdMoment = distribution.reduce((acc, curr) => {
+        return acc + Math.pow(curr[1] - mean, 3);
+      }, 0) / distribution.length;
+
+      // Calculate the skewness
+      const skewness = thirdMoment / Math.pow(stdDev, 3);
+
+      return skewness;
+    } catch(err) {
+      console.error(`"Skewness()" failed: ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Detect Outliers
+   * Outlier detection typically involves identifying data points that are far from the mean of a distribution, 
+   * often using a threshold based on the standard deviation. 
+   * A common method for detecting outliers is to flag values that are more than a certain number of standard deviations away from the mean. 
+   * For example, values beyond 2 or 3 standard deviations can be considered outliers.
+   * @param {Array} distribution [[key, value], [key, value], ... ]
+   * @param {number} standard deviation
+   * @param {number} threshold
+   * @returns {Array} Outliers
+   */
+  static DetectOutliers(distribution = [], stdDev = 0, threshold = 3) {
+    try {
+      // Calculate the mean of the distribution
+      const mean = Calculate.GeometricMean(distribution);
+
+      // Find outliers
+      const outliers = distribution.filter(x => {
+        const diff = Math.abs(x[1] - mean);
+        return diff > threshold * stdDev;
+      });
+
+      // Return the outliers as an array of [key, value] pairs
+      return outliers;
+    } catch(err) {
+      console.error(`"DetectOutliers()" failed: ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Calculate Arithmetic Mean
+   * @returns {number} arithmetic mean
+   */
+  static ArithmeticMean(distribution = []) {
+    try {
+      const n = distribution.length;
+      if(n == 0) throw new Error(`Distribution is empty: ${n}`);
+
+      let values = [];
+      if (Array.isArray(distribution[0])) values = distribution.map(item => item[1]);
+      else values = distribution;
+
+      const mean = values.reduce((a, b) => a + b) / n;
+      console.warn(`ARITHMETIC MEAN: ${mean}`);
+      return mean.toFixed(3);
+    } catch(err) {
+      console.error(`"ArithmeticMean()" failed : ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Geometric Mean
+   * @param {Array} numbers
+   * @returns {number} Geometric Mean
+   */
+  static GeometricMean(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`Distribution is empty: ${numbers.length}`);
+
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => Number(item[1]));
+      else values = numbers.map(x => Number(x));
+
+      const product = values.reduce((product, num) => product * num, 1);
+      const geometricMean = Math.pow(product, 1 / values.length);
+      console.warn(`GEOMETRIC MEAN: ${geometricMean}`);
+      return geometricMean;
+    } catch(err) {
+      console.error(`"GeometricMean()" failed : ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Harmonic Mean
+   * @param {Array} numbers
+   * @returns {number} Harmonic Mean
+   */
+  static HarmonicMean(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`Distribution is empty: ${numbers.length}`);
+      
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => item[1]);
+      else values = numbers;
+
+      const harmonicMean = values.length / values.reduce((a, b) => a + 1 / b, 0);
+      console.warn(`HERMONIC MEAN: ${harmonicMean}`);
+      return harmonicMean;
+    } catch(err) {
+      console.error(`"HarmonicMean()" failed : ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Quadratic Mean
+   * @param {Array} numbers
+   * @returns {number} Quadratic Mean
+   */
+  static QuadraticMean(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`Distribution is empty: ${numbers.length}`);
+
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => item[1]);
+      else values = numbers;
+
+      const quadraticMean = Math.sqrt(values.reduce((a, b) => a + b * b, 0) / values.length);
+      console.warn(`QUADRATIC MEAN: ${quadraticMean}`);
+      return quadraticMean;
+    } catch(err) {
+      console.error(`"QuadraticMean()" failed : ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Median Mean
+   * @param {Array} numbers
+   * @returns {number} Median
+   */
+  static Median(numbers = []) {
+    try {
+      if(numbers.length < 2) throw new Error(`Input less than 2: ${numbers.length}`);
+
+      let values = [];
+      if (Array.isArray(numbers[0])) values = numbers.map(item => item[1]);
+      else values = numbers;
+
+      const sortedNumbers = [...values].sort((a, b) => a - b);
+      const middle = Math.floor(sortedNumbers.length / 2);
+      const median = sortedNumbers.length % 2 === 0 ?
+          (sortedNumbers[middle - 1] + sortedNumbers[middle]) / 2 :
+          sortedNumbers[middle];
+
+      console.warn(`MEDIAN: ${median}`);
+      return median;
+    } catch(err) {
+      console.error(`"Median()" failed : ${err}`);
+      return 1;
+    }
   }
 }
 
@@ -306,17 +564,18 @@ class Calculate {
  */
 const Metrics = () => {
   Calculate.CountTypes();
-  Calculate.CountPresent();
-  Calculate.CountAbsent();
+  Calculate.PrintAttendance();
   Calculate.CountAllTrainedUsers();
-  Calculate.GetDistribution();
+  Calculate.GetTrainingTypeDistribution();
   Calculate.PrintTopTen();
   Calculate.PrintAllTrainees();
   Calculate.PrintCountsPerMonth();
 }
 
 const _testMetrics = () => {
-  Calculate.CountCategories();
+  // Calculate.SumCategories();
+  // Calculate.CountCategories();
+  Calculate.PrintTopTen();
 }
 
 

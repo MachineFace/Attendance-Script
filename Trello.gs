@@ -21,7 +21,7 @@ class TrelloService {
    */
   async GetBoards() {
     // `curl 'https://api.trello.com/1'`
-    const repo = `/boards/b3XlrJtj?key=${this.key}&token=${this.secret}`;
+    const repo = `${this.root}/boards/b3XlrJtj?key=${this.key}&token=${this.secret}`;
     const params = {
       method : "GET",
       headers : { "Authorization" : "Basic " + Utilities.base64EncodeWebSafe(this.key + ":" + this.secret)},

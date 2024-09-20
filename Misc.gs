@@ -81,7 +81,7 @@ const GetRowData = (row) => {
     });
     dict[`sheetName`] = SHEETS.Main.getSheetName();
     dict[`row`] = row;
-    console.info(dict);
+    // console.info(dict);
     return dict;
   } catch (err) {
     console.error(`"GetRowData()" failed : ${err}`);
