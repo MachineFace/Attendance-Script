@@ -6,6 +6,9 @@
 const SERVICE_NAME = `🦤 AttendanceBot`;
 const DELETE_AFTER_DAYS = 90;
 
+/**
+ * Colors
+ */
 const COLORS = Object.freeze({
   green_light : `#d9ead3`,
   green : `74d975`, 
@@ -35,6 +38,9 @@ const COLORS = Object.freeze({
   black : `#000000`,
 });
 
+/**
+ * Server Response Codes
+ */
 const RESPONSECODES = Object.freeze({
 	200 : `OK`,
 	201 : `Created`,
@@ -104,6 +110,9 @@ const RESPONSECODES = Object.freeze({
 	599 : `Network connect timeout error`,
 });
 
+/**
+ * Training Types
+ */
 const TYPES = Object.freeze({
   haas : 'Haas Mini Mill',
   tormach : 'Tormach',
@@ -112,6 +121,9 @@ const TYPES = Object.freeze({
   laser : 'Laser Cutter',
 });
 
+/**
+ * Headernames
+ */
 const HEADERNAMES = Object.freeze({
   date : `Date`,
   equipment :	`Equipment`,
@@ -123,10 +135,16 @@ const HEADERNAMES = Object.freeze({
   random : `Random Fact`,
 });
 
+/**
+ * Sheets
+ */
 const SHEETS = Object.freeze({
   Main : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main'), 
 });
 
+/**
+ * Other Sheets
+ */
 const OTHERSHEETS = Object.freeze({
   Metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
   Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
@@ -138,6 +156,9 @@ const OTHERSHEETS = Object.freeze({
   CountsPerWeek : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerWeek`),
 });
 
+/**
+ * Blocklist
+ */
 const BLOCKLIST = [
   `@24thf9vivimassimple.com.ar`,
   `@4rdigital.com`,
