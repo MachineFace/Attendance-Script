@@ -109,6 +109,7 @@ class Calculate {
       return occurrences;
     } catch(err) {
       console.error(`"CountTypes()" failed : ${err}`);
+      return 1;
     }
   }
 
@@ -116,19 +117,25 @@ class Calculate {
    * Print Types to Data Page
    */
   static PrintTypes() {
-    const types = Calculate.CountTypes();
-    const cleaned = types.reduce((obj, [key, value]) => {
-        obj[key] = value;
-        return obj;
-    }, {});
-    const values = [
-      [ `Haas Mini Mill Trainings Completed:`, cleaned[`Haas Mini Mill`] ],
-      [ `Ultimaker Trainings Completed:`, cleaned['Type A / Ultimakers'] ],
-      [ `Tormach Trainings Completed:`, cleaned[`Tormach`] ],
-      [ `Fablight Trainings Completed:`, cleaned[`FabLight`] ],
-      [ `Laser Trainings Completed:`, cleaned[`Laser Cutter`] ],
-    ];
-    OTHERSHEETS.Metrics.getRange(3, 3, values.length, 2).setValues(values);
+    try {
+      const types = Calculate.CountTypes();
+      const total = [...types]
+        .map(x => x[1])
+        .reduce((a,b) => a + b);
+      console.info(total);
+      const table = [...types]
+        .map(([training, count], idx) => [ training, count, `${Number((count / total) * 100).toFixed(2)}%` ])
+      const values = [
+        [ `Training`, `Count`, `Percentage` ],
+        ...table,
+      ];
+      console.info(values);
+      OTHERSHEETS.Metrics.getRange(1, 10, values.length, 3).setValues(values);
+      return 0;
+    } catch(err) {
+      console.error(`"PrintTypes()" failed : ${err}`);
+      return 1;
+    }
   }
 
   /**
@@ -225,27 +232,36 @@ class Calculate {
   }
 
   /**
-   * Print Top Ten
-   */
-  static PrintTopTen() {
-    const distribution = Calculate.StudentDistribution()
-      .slice(0, 11)
-
-    OTHERSHEETS.Metrics.getRange(1, 6, 1, 3).setValues([[ `Place`, `Top Ten Returning Trainees`, `# of Trainings Attended`, ]]);
-    distribution.forEach(([name, count], idx) => {
-      OTHERSHEETS.Metrics.getRange(2 + idx, 6, 1, 3).setValues([[ idx + 1, TitleCase(name), count, ]]); 
-    });
-
-  }
-
-  /**
    * Print All Trained
    */
   static PrintAllTrainees() {
-    let names = Calculate.StudentDistribution();
-    OTHERSHEETS.Everyone.getRange(1, 5).setValue(`Total Trained: ${names.length}`);
+    const names = Calculate.StudentDistribution();
+    OTHERSHEETS.Everyone.getRange(1, 5, 1, 1).setValue(`Total Trained: ${names.length}`);
     OTHERSHEETS.Everyone.getRange(2, 1, names.length, 2).setValues(names);
   }
+
+  /**
+   * Print Top Ten
+   */
+  static Top25() {
+    try {
+      const distribution = Calculate.StudentDistribution()
+        .slice(0, 25)
+        .map(([name, count], idx) => [ idx + 1, TitleCase(name), count,] );
+      const values = [
+        [ `Place`, `Top 25 Returning Trainees`, `# of Trainings Attended`, ],
+        ...distribution,
+      ];
+      OTHERSHEETS.Metrics.getRange(1, 6, values.length, 3).setValues(values);
+      return 0;
+    } catch(err) {
+      console.error(`"Top25()" failed: ${err}`);
+      return 1;
+    }
+
+  }
+
+  
 
   /**
    * List All Trainees
@@ -266,6 +282,18 @@ class Calculate {
   /**
    * --------------------------------------------------------------------------------------------------------------
    */
+
+  /**
+   * Sum Numbers
+   * @param {Array} numbers
+   * @returns {number} sum
+   */
+  static Sum(numbers = []) {
+    if(numbers.length > 1) {
+      return Number(numbers.reduce((a, b) => Number(a) + Number(b), 0)).toFixed(2);
+    } else if(numbers.length == 1) return numbers[0];
+    else return 0;
+  }
 
   /**
    * Calculate Distribution
@@ -598,11 +626,11 @@ class Calculate {
  * @TRIGGERED - Once a day
  */
 const Metrics = () => {
-  Calculate.CountTypes();
+  Calculate.PrintTypes();
   Calculate.PrintAttendance();
   Calculate.CountAllTrainedUsers();
   Calculate.GetTrainingTypeDistribution();
-  Calculate.PrintTopTen();
+  Calculate.Top25();
   Calculate.PrintAllTrainees();
   Calculate.PrintCountsPerMonth();
 }
@@ -610,7 +638,7 @@ const Metrics = () => {
 const _testMetrics = () => {
   // Calculate.SumCategories();
   // Calculate.CountCategories();
-  Calculate.PrintTopTen();
+  Calculate.PrintTypes();
 }
 
 
