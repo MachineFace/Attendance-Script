@@ -1,112 +1,133 @@
 /**
- * -----------------------------------------------------------------------------------------------------------------
- * Class For Logging
+ * ----------------------------------------------------------------------------------------------------------------
+ * Class for Writing a Log
  */
 class Log {
-  constructor() {
-    /** @private */ 
-    this.date = Utilities.formatDate(new Date(), "PST", "MM/dd/yyyy 'at' HH:mm:ss z").toString();
-    /** @private */ 
-    this.sheet = OTHERSHEETS.Logger;
-    /** @private */ 
-    this.row = OTHERSHEETS.Logger.getLastRow() + 1;
-    /** @private */ 
-    this.maxRows = OTHERSHEETS.Logger.getMaxRows();
-    /** @private */ 
-    this.maxColumns = OTHERSHEETS.Logger.getMaxColumns();
-    /** @private */ 
-    this.type = {
-      Error : `ERROR!!`,
-      Warning : `WARNING!`,
-      Info : `INFO`,
-      Debug : `DEBUG`,
+  constructor() { 
+
+  }
+
+  /**
+   * Error Message
+   * @param {string} message
+   */
+  static Error(message = ``) {
+    try{
+      const text = [ new Date().toUTCString(), "ERROR!", message, ];
+      const sheet = this.prototype._GetLoggerSheet();
+      sheet.appendRow(text);
+      console.error(`${text[0]}, ${text[1]} : ${message}`);
+      this.prototype._PopItem();
+      this.prototype._CleanupSheet();
+      return 0;
+    } catch(err) {
+      console.error(`"Error()" failed : ${err}`);
+      return 1;
     }
   }
-  Error(message = ``) {
-    const text = [this.date, this.type.Error, message, ];
-    this.sheet.appendRow(text);
-    console.error(`${text[0]}, ${text[1]} : ${message}`);
-    let rules = [
-      SpreadsheetApp.newConditionalFormatRule()
-        .whenFormulaSatisfied(`=$B2="${this.type.Error}"`)
-        .setRanges([this.sheet.getRange(2, 1, this.maxRows, this.maxColumns),])
-        .setBackground(COLORS.red_light)
-        .setFontColor(COLORS.red)
-        .build(),
-    ];
-    this.sheet.setConditionalFormatRules(rules);
-    this._PopItem();
-    this._CleanupSheet();
+
+  /**
+   * Warning Message
+   * @param {string} message
+   */
+  static Warning(message = ``) {
+    try{
+      const text = [ new Date().toUTCString(), "WARNING", message, ];
+      OTHERSHEETS.Logger.appendRow(text);
+      console.warn(`${text[0]}, ${text[1]} : ${message}`);
+      this.prototype._PopItem();
+      this.prototype._CleanupSheet();
+      return 0;
+    } catch(err) {
+      console.error(`"Warning()" failed : ${err}`);
+      return 1;
+    }
   }
-  Warning(message = ``) {
-    const text = [this.date, this.type.Warning, message, ];
-    this.sheet.appendRow(text);
-    console.warn(`${text[0]}, ${text[1]} : ${message}`);
-    let rules = [
-      SpreadsheetApp.newConditionalFormatRule()
-        .whenFormulaSatisfied(`=$B2="${this.type.Warning}"`)
-        .setRanges([this.sheet.getRange(2, 1, this.maxRows, this.maxColumns),])
-        .setBackground(COLORS.orange_light)
-        .setFontColor(COLORS.orange)
-        .build(),
-    ];
-    this.sheet.setConditionalFormatRules(rules);
-    this._PopItem();
-    this._CleanupSheet();
+
+  /**
+   * Info Message
+   * @param {string} message
+   */
+  static Info(message = ``) {
+    try {
+      const text = [ new Date().toUTCString(), "INFO", message, ];
+      OTHERSHEETS.Logger.appendRow(text);
+      console.info(`${text[0]}, ${text[1]} : ${message}`);
+      this.prototype._PopItem();
+      this.prototype._CleanupSheet();
+      return 0;
+    } catch(err) {
+      console.error(`"Info()" failed : ${err}`);
+      return 1;
+    }
   }
-  Info(message = ``) {
-    const text = [this.date, this.type.Info, message, ];
-    this.sheet.appendRow(text);
-    console.info(`${text[0]}, ${text[1]} : ${message}`);
-    let rules = [
-      SpreadsheetApp.newConditionalFormatRule()
-        .whenFormulaSatisfied(`=$B2="${this.type.Info}"`)
-        .setRanges([this.sheet.getRange(2, 1, this.maxRows, this.maxColumns),])
-        .setBackground(COLORS.grey_light)
-        .setFontColor(COLORS.grey_dark)
-        .build(),
-    ];
-    this.sheet.setConditionalFormatRules(rules);
-    this._PopItem();
-    this._CleanupSheet();
+
+  /**
+   * Debug Message
+   * @param {string} message
+   */
+  static Debug(message = ``) {
+    try {
+      const text = [ new Date().toUTCString(), "DEBUG", message, ];
+      OTHERSHEETS.Logger.appendRow(text);
+      console.log(`${text[0]}, ${text[1]} : ${message}`);
+      this.prototype._PopItem();
+      this.prototype._CleanupSheet();
+      return 0;
+    } catch(err) {
+      console.error(`"Debug()" failed : ${err}`);
+      return 1;
+    }
   }
-  Debug(message = ``) {
-    const text = [this.date, this.type.Debug, message, ];
-    this.sheet.appendRow(text);
-    console.log(`${text[0]}, ${text[1]} : ${message}`);
-    let rules = [
-      SpreadsheetApp.newConditionalFormatRule()
-        .whenFormulaSatisfied(`=$B2="${this.type.Debug}"`)
-        .setRanges([this.sheet.getRange(2, 1, this.maxRows, this.maxColumns),])
-        .setBackground(COLORS.purle_light)
-        .setFontColor(COLORS.purple_dark)
-        .build(),
-    ];
-    this.sheet.setConditionalFormatRules(rules);
-    this._PopItem();
-    this._CleanupSheet();
-  }
+
+  /** 
+   * Pop Item
+   * @private 
+   */
   _PopItem() {
-    if(this.row > 100) {
-      this.sheet.deleteRows(2, 1);
-    } else {
-      this.sheet.insertRowAfter(this.sheetLength - 1);
+    try {
+      if(OTHERSHEETS.Logger.getLastRow() >= 500) OTHERSHEETS.Logger.deleteRow(2);
+      return 0;
+    } catch(err) {
+      console.error(`"PopItem()" failed : ${err}`);
+      return 1;
     }
   }
+  
+  /** 
+   * Cleanup Sheet
+   * @private 
+   */
   _CleanupSheet() {
-    if(this.row < 2000) return;
-    this.sheet.deleteRows(2, 1999);
+    try {
+      if(OTHERSHEETS.Logger.getLastRow() > 2000) OTHERSHEETS.Logger.deleteRows(2, 1998);
+      return 0;
+    } catch(err) {
+      console.error(`Whoops ---> ${err}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Get Logger Sheet
+   * Returns logger sheet even if logger sheet doesn't exist
+   * @private
+   */
+  _GetLoggerSheet() {
+    try {
+      let loggerSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`);
+      if(!loggerSheet) {
+        loggerSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(`Logger`);
+        loggerSheet.appendRow([ `Date`, `Type`, `Message`, ]);
+        return loggerSheet;
+      }
+      return loggerSheet;
+    } catch(err) {
+      console.error(`"_GetLoggerSheet()" failed : ${err}`);
+      return 1;
+    }
   }
   
 }
 
-const _testWrite = () => {
-  const l = new Log();
-  for(let i = 0; i < 2; i++) {
-    l.Info(`${i} Some Info...`);
-    l.Warning(`${i} Some Warning....`);
-    l.Error(`${i} Some Error....`);
-    l.Debug(`${i} Some Debug....`);
-  }
-}
 

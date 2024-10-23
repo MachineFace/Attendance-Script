@@ -40,7 +40,7 @@ class BCourses {
       const responseCode = response.getResponseCode();
       if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
 
-      Log.Info(`Response ---> : ${JSON.stringify(response, null, 3)}`);
+      console.info(`Response ---> : ${JSON.stringify(response, null, 3)}`);
 
       return {
         responseCode : response.getResponseCode(),
@@ -260,7 +260,7 @@ class BCourses {
     const endpoint = `${ENROLLMENTS}?search_term=${encodeURI(searchterm)}`
     try {
       const results = await this.GetPaginatedData(endpoint, pages)
-      // Log.Info('GetJacobsUsers() results', results);
+      // console.info('GetJacobsUsers() results', results);
       return results;
     } catch (err) {
       console.error(`SearchUsers(searchterm: ${searchterm}, pages: ${pages}) error: ${err}`);
@@ -279,12 +279,12 @@ class BCourses {
     const results = await this.GetEnrollments("inactive", 5);
     
     const filtered = this.FilterBadUsers(results);
-    // Logger.log(`unfiltered results`);
-    // Log.Info('results', results);
-    Logger.log(`filtered`);
-    Log.Info('filtered inactive users', filtered);
-    Logger.log(`GetInactiveUsers() - ${results.length} total "inactive"`);
-    Logger.log(`GetInactiveUsers() - ${filtered.length} total "inactive" older than 5 year`);
+    // console.info(`unfiltered results`);
+    // console.info('results', results);
+    console.info(`filtered`);
+    console.info('filtered inactive users', filtered);
+    console.info(`GetInactiveUsers() - ${results.length} total "inactive"`);
+    console.info(`GetInactiveUsers() - ${filtered.length} total "inactive" older than 5 year`);
     } catch (err) {
       console.error(`GetInactiveUsers() error: ${err}`);
     }
@@ -306,12 +306,12 @@ class BCourses {
       const data = await this.GetPaginatedData(url);
       let students = new Array;
       data[0].child_events.forEach(event => {
-        Log.Debug(`GetTrainingAttendees() - Attendee: ${event.user}`);
+        console.info(`GetTrainingAttendees() - Attendee: ${event.user}`);
         students.push({name: event.user.name, id: event.user.id});
       })
       for (let i=0; i<students.length;i++){
         let search = await this.SearchUsers(students[i].id);
-        // Log.Debug(`Found email: ${search[0].email}`);
+        // console.info(`Found email: ${search[0].email}`);
         if (search.length>0) students[i].email = search[0].email;
       }
       return students;
@@ -663,7 +663,9 @@ class BCourses {
 }
 
 
-
+/** 
+ * 
+ *
 const _testbCourses = () => {
   new BCourses().GetAllUsers();
   // let user = [
@@ -730,7 +732,7 @@ const _testbCourses = () => {
   // ];
   // new BCourses()._FilterUsers(user);
 }
-
+*/
 
 
 

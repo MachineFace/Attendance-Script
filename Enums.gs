@@ -114,11 +114,13 @@ const RESPONSECODES = Object.freeze({
  * Training Types
  */
 const TYPES = Object.freeze({
-  haas : 'Haas Mini Mill',
-  tormach : 'Tormach',
-  fablight : 'FabLight',
-  ultimakers : 'Type A / Ultimakers',
-  laser : 'Laser Cutter',
+  haas : `Haas Mini Mill`,
+  tormach : `Tormach`,
+  fablight : `FabLight`,
+  ultimakers : `Type A / Ultimakers`,
+  laser : `Laser Cutter`,
+  shopbot : `Shopbot`,
+  workshop : `Workshop`,
 });
 
 /**

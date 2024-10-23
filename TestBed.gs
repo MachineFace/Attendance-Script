@@ -50,7 +50,7 @@ const PrintCountsPerWeek = () => {
 
 const CountPerWeek = () => {
   let dates = [];
-  GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)
+  SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)
     .filter(Boolean)
     .forEach( date => {
       if(date instanceof(Date)) {

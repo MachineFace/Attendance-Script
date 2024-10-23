@@ -28,20 +28,20 @@ const OnChange = async (e) => {
   }
 
   // Parse Row
-  const { date, equipment, name, present, online, bCourses, absent, random, row } = GetRowData(thisRow);
+  const { date, equipment, name, present, online, bCourses, absent, random, row } = SheetService.GetRowData(SHEETS.Main, thisRow);
   
   // Set Date
-  // name && !date ? SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
+  // name && !date ? SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
 
   // Add a Random Fact
   if(name && present && online && bCourses && !absent) {
     console.info(`Setting Random Fact....`);
-    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
   } else if(name && absent) {
     // console.info(`Skipping FuckOff....`);
-    // SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    // SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
   } else {
-    SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
   }
 
   

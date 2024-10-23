@@ -12,7 +12,7 @@ class RandomFacts {
    * @return {string} fact
    */
   static async UselessFact() {
-    const repo = `https://uselessfacts.jsph.pl/random.json?language=en`;
+    const url = `https://uselessfacts.jsph.pl/random.json?language=en`;
     const params = {
       method : "GET",
       headers : { "Authorization" : "Basic ", },
@@ -21,7 +21,7 @@ class RandomFacts {
       muteHttpExceptions : true
     };
     try {
-      const response = await UrlFetchApp.fetch(repo, params);
+      const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
       if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
       const content = JSON.parse(response.getContentText())["text"];
@@ -38,10 +38,10 @@ class RandomFacts {
    * Fill the sheet
    */
   static async LoopAndFill() {
-    const present = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
-    const online = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
-    const entered = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
-    let factColumn = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
+    const present = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.present);
+    const online = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.online);
+    const entered = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses);
+    let factColumn = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
       .filter(Boolean);
     console.info(`${present.length}, ${online.length}, ${entered.length}`);
     
@@ -50,7 +50,7 @@ class RandomFacts {
         let fact = await this.UselessFact();
         if(factColumn.indexOf(fact) == -1) {
           console.info(fact)
-          SetByHeader(SHEETS.Main, HEADERNAMES.random, i + 2, fact);
+          SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, i + 2, fact);
         } else {
           fact = await this.UselessFact();
           console.info(`Trying again : ${fact}`);
@@ -67,7 +67,7 @@ class RandomFacts {
    * @return {string} newfact
    */
   async _CheckFactRecursively(fact) {
-    const index = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
+    const index = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
       .filter(Boolean)
       .indexOf(fact);
     const limit = 10;

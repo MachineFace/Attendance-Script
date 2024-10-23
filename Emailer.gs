@@ -50,48 +50,6 @@ const ListInboxSnippets = () => {
   }
 }
 
-
-
-// const SetPurgeTrigger = () => ScriptApp.newTrigger(`CleanOutJPSNotifications`).timeBased().everyDays(1).create();
-// const SetPurgeMoreTrigger = () => ScriptApp.newTrigger('purgeMore').timeBased().at(new Date(new Date().getTime() + 1000 * 60 * 2)).create();
-/**
- * Clean Out Old JPS Notifications
- * @TRIGGERED Daily
- */
-const CleanOutJPSNotifications = () => {
-  let cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - DELETE_AFTER_DAYS);
-  console.warn(`Cutoff Date ${DELETE_AFTER_DAYS} Days ago: ${cutoff}`);
-  let purgeDate  = Utilities.formatDate(cutoff, `PST`, `yyyy-MM-dd`);
-  try {
-    let pageToken;
-    do {
-      const threadList = Gmail.Users.Threads.list('me', {
-        q: `label:jacobs-project-support-jps-notifications before:${purgeDate}`,
-        pageToken: pageToken
-      });
-      if (threadList.threads && threadList.threads.length > 0) {
-        console.info(`Removing ${threadList.threads.length} Emails....`)
-        threadList.threads.forEach(thread => {
-          // console.info(`Removing Thread: ${thread}`);
-          Gmail.Users.Threads.remove(`me`, thread.id)
-          // console.info(thread.getId());
-          // console.info(`Snip: ${thread.snippet}`);
-
-        });
-      }
-      pageToken = threadList.nextPageToken;
-    } while (pageToken);
-  } catch (err) {
-    console.error(`Whoops ----> ${err}`);
-  } finally {
-    console.warn(`Emails Cleaned Out.`);
-  }
-}
-
-
-
-
 /**
  * Create Email Filters
  * @NOTIMPLEMENTED

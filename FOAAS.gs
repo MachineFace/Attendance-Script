@@ -1,5 +1,4 @@
 
-
 /**
  * ----------------------------------------------------------------------------------------------------------------
  * Fuck Off as a Service
@@ -68,7 +67,7 @@ class FuckOffAsAService {
    * @return {string} random fact
    */
   async GetRandom() {
-    const repo = this.randomEndpoint;
+    const url = `${this.root}${this.randomEndpoint}`;
     const params = {
       method : "GET",
       headers : { "authorization" : "basic " },
@@ -77,7 +76,7 @@ class FuckOffAsAService {
     }
 
     try {
-      const response = await UrlFetchApp.fetch(this.root + repo, params);
+      const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
       if (responseCode !== 200) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
       const content = response.getContentText();
@@ -92,9 +91,9 @@ class FuckOffAsAService {
 
   /**
    * Parse html content.
-   * @private
    * @param {string} html
    * @return {{}} {title : string, subtitle : string}
+   * @private
    */
   _Parse(content) {
     content = content.toString();
@@ -110,20 +109,19 @@ class FuckOffAsAService {
     } 
   }
 
-
 }
 
 
 const _testFuckOff = async () => await new FuckOffAsAService({ name : `Merc Wahlberg`}).GetRandom();
 
 const DoFuckOff = async () => {
-  const names = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
-  const absentIndexes = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
+  const names = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
+  const absentIndexes = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
   for(let i = 0; i < absentIndexes.length; i++) {
     console.info(`Index: ${i + 2}, Item: ${absentIndexes[i]}`);
     if(absentIndexes[i] == true) {
       const fuckoff = await new FuckOffAsAService({ name : names[i] }).GetRandom();
-      SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, i + 2, fuckoff);
+      SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, i + 2, fuckoff);
     }
   }
 }

@@ -60,38 +60,38 @@ const _gasTMiscTesting = async () => {
 
   // ------------------------------------------------------------------------------------------------------------------------------
   await test(`GetByHeader`, (t) => {
-    const x = GetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, 5);
+    const x = SheetService.GetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, 5);
     t.notEqual(x, undefined || null, `GetByHeader SHOULD NOT return undefined or null: ${x}`);
 
-    const y = GetByHeader(SHEETS.Main, `BAD COLUMN NAME`, 2);
+    const y = SheetService.GetByHeader(SHEETS.Main, `BAD COLUMN NAME`, 2);
     t.equal(y, undefined || null, `GetByHeader SHOULD return undefined or null for Bad column name: ${y}`);
 
-    const z = GetByHeader(`BAD SHEET`, HEADERNAMES.name, 2);
+    const z = SheetService.GetByHeader(`BAD SHEET`, HEADERNAMES.name, 2);
     t.equal(y, undefined || null, `GetByHeader SHOULD return undefined or null for bad sheet: ${y}`);
 
-    const a = GetByHeader(`BAD SHEET`, `BAD COLUMN NAME`, `BAD ROW NUMBER`);
+    const a = SheetService.GetByHeader(`BAD SHEET`, `BAD COLUMN NAME`, `BAD ROW NUMBER`);
     t.equal(a, undefined || null, `GetByHeader SHOULD return undefined or null for bad inputs.: ${a}`);
   });
 
   await test(`GetColumnDataByHeader`, (t) => {
-    const x = GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
+    const x = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
     t.notEqual(x, undefined || null, `GetColumnDataByHeader SHOULD NOT return undefined or null: ${x.slice(0, 10)}`);
 
-    const y = GetColumnDataByHeader(SHEETS.Main, `BAD COLUMN NAME`);
+    const y = SheetService.GetColumnDataByHeader(SHEETS.Main, `BAD COLUMN NAME`);
     t.equal(y, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${y}`);
 
-    const z = GetColumnDataByHeader(OTHERSHEETS.Chart, HEADERNAMES.name);
+    const z = SheetService.GetColumnDataByHeader(OTHERSHEETS.Chart, HEADERNAMES.name);
     t.equal(z, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${z}`);
 
-    const a = GetColumnDataByHeader(OTHERSHEETS.Chart, `Brrp`);
+    const a = SheetService.GetColumnDataByHeader(OTHERSHEETS.Chart, `Brrp`);
     t.equal(a, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${a}`);
   });
 
   await test(`GetRowData`, (t) => {
-    const x = GetRowData(3);
+    const x = SheetService.GetRowData(3);
     t.notEqual(x, undefined || null, `GetRowData SHOULD NOT return undefined or null: ${JSON.stringify(x)}`);
 
-    const y = GetRowData(`BAD ROW NUMBER`);
+    const y = SheetService.GetRowData(`BAD ROW NUMBER`);
     t.equal(y, undefined || null, `GetRowData SHOULD return undefined or null: ${y}`);
   });
 
@@ -113,13 +113,12 @@ const _gasTLoggerTesting = async () => {
 
   await test(`WriteLogger`, (t) => {
     console.time(`EXECUTION TIMER`);
-    const write = new WriteLogger();
 
-    const w = write.Warning(`Ooopsies ----> Warning`);
-    const i = write.Info(`Some Info`);
-    const e = write.Error(`ERROR`);
-    const d = write.Debug(`Debugging`);
-    const c = write._CleanupSheet();
+    const w = Log.Warning(`Ooopsies ----> Warning`);
+    const i = Log.Info(`Some Info`);
+    const e = Log.Error(`ERROR`);
+    const d = Log.Debug(`Debugging`);
+    const c = Log._CleanupSheet();
     
 
     console.timeEnd(`EXECUTION TIMER`);

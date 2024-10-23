@@ -19,7 +19,7 @@ class Calculate {
   static CountCategories() {
     try {
       let categories = [];
-      [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
+      [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
         .filter(Boolean)
         .forEach(type => {
           if(Object.values(TYPES).includes(type)) categories.push(type);
@@ -39,7 +39,7 @@ class Calculate {
   static CountPerMonth() {
     try {
       let dates = [];
-      [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)]
+      [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)]
         .filter(Boolean)
         .forEach(date => {
           let d = new Date(date);
@@ -111,7 +111,7 @@ class Calculate {
    */
   static CountTypes() {
     try {
-      let typeList = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
+      let typeList = [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
         .filter(Boolean)
         .filter(x => x != `Test`)
         .filter(x => !x.includes(`Spring`))
@@ -206,7 +206,7 @@ class Calculate {
    */
   static CountAllTrainedUsers() {
     try {
-      const entered = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses)];
+      const entered = [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.bCourses)];
       const count = entered.length;
       const values = [
         [ `Total Trained`, count, ], 
@@ -252,7 +252,7 @@ class Calculate {
    */
   static GetTrainingTypeDistribution() { 
     try {
-      let types = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
+      let types = [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
         .filter(Boolean)
         .filter(x => !x.includes(`Spring`))
         .filter(x => !x.includes(`Summer`))
@@ -273,7 +273,7 @@ class Calculate {
    */
   static StudentDistribution() {
     try {
-      let names = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
+      let names = [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
         .filter(Boolean)
         .filter(x => x != `Semester Total`)
         .map(x => x = x.toLowerCase());
@@ -350,7 +350,7 @@ class Calculate {
    */
   static _ListAllTrainees() {
     try {
-      let names = [...GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
+      let names = [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name)]
         .filter(Boolean)
         .filter(x => x != `Semester Total`)
         .map(x => x = x.toLowerCase());
@@ -723,7 +723,7 @@ const Metrics = () => {
 }
 
 const _testMetrics = () => {
-  Calculate.CountUniqueStudents();
+  Calculate.PrintTypes();
 }
 
 
