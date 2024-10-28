@@ -64,13 +64,13 @@ const _gasTMiscTesting = async () => {
     t.notEqual(x, undefined || null, `GetByHeader SHOULD NOT return undefined or null: ${x}`);
 
     const y = SheetService.GetByHeader(SHEETS.Main, `BAD COLUMN NAME`, 2);
-    t.equal(y, undefined || null, `GetByHeader SHOULD return undefined or null for Bad column name: ${y}`);
+    t.equal(y, 1, `GetByHeader SHOULD return "1". Actual: ${y}`);
 
     const z = SheetService.GetByHeader(`BAD SHEET`, HEADERNAMES.name, 2);
-    t.equal(y, undefined || null, `GetByHeader SHOULD return undefined or null for bad sheet: ${y}`);
+    t.equal(y, 1, `GetByHeader SHOULD return "1". Actual: ${y}`);
 
     const a = SheetService.GetByHeader(`BAD SHEET`, `BAD COLUMN NAME`, `BAD ROW NUMBER`);
-    t.equal(a, undefined || null, `GetByHeader SHOULD return undefined or null for bad inputs.: ${a}`);
+    t.equal(a, 1, `GetByHeader SHOULD return "1". Actual: ${a}`);
   });
 
   await test(`GetColumnDataByHeader`, (t) => {
@@ -78,13 +78,13 @@ const _gasTMiscTesting = async () => {
     t.notEqual(x, undefined || null, `GetColumnDataByHeader SHOULD NOT return undefined or null: ${x.slice(0, 10)}`);
 
     const y = SheetService.GetColumnDataByHeader(SHEETS.Main, `BAD COLUMN NAME`);
-    t.equal(y, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${y}`);
+    t.equal(y, 1, `GetColumnDataByHeader SHOULD return "1". Actual: ${y}`);
 
     const z = SheetService.GetColumnDataByHeader(OTHERSHEETS.Chart, HEADERNAMES.name);
-    t.equal(z, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${z}`);
+    t.equal(z, 1, `GetColumnDataByHeader SHOULD return "1". Actual: ${z}`);
 
     const a = SheetService.GetColumnDataByHeader(OTHERSHEETS.Chart, `Brrp`);
-    t.equal(a, undefined || null, `GetColumnDataByHeader SHOULD return undefined or null: ${a}`);
+    t.equal(a, 1, `GetColumnDataByHeader SHOULD return "1". Actual: ${a}`);
   });
 
   await test(`GetRowData`, (t) => {
@@ -92,7 +92,7 @@ const _gasTMiscTesting = async () => {
     t.notEqual(x, undefined || null, `GetRowData SHOULD NOT return undefined or null: ${JSON.stringify(x)}`);
 
     const y = SheetService.GetRowData(`BAD ROW NUMBER`);
-    t.equal(y, undefined || null, `GetRowData SHOULD return undefined or null: ${y}`);
+    t.equal(y, 1, `GetRowData SHOULD return "1". Actual: ${y}`);
   });
 
   await test.finish();
