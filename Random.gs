@@ -47,12 +47,12 @@ class RandomFacts {
     
     for(let i = 0; i < present.length; i++) {
       if(present[i] == true && online[i] == true && entered[i] == true) {
-        let fact = await this.UselessFact();
+        let fact = await RandomFacts.UselessFact();
         if(factColumn.indexOf(fact) == -1) {
           console.info(fact)
           SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, i + 2, fact);
         } else {
-          fact = await this.UselessFact();
+          fact = await RandomFacts.UselessFact();
           console.info(`Trying again : ${fact}`);
         }
       }
@@ -66,7 +66,7 @@ class RandomFacts {
    * @param {string} fact
    * @return {string} newfact
    */
-  async _CheckFactRecursively(fact) {
+  static async CheckFactRecursively(fact) {
     const index = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.random)
       .filter(Boolean)
       .indexOf(fact);
@@ -80,7 +80,7 @@ class RandomFacts {
       newFact = await RandomFacts.UselessFact();
       count++;
       console.info(count)
-      this._CheckFactRecursively(newFact);
+      await RandomFacts.CheckFactRecursively(newFact);
       console.info(index)
       return newFact;
     }

@@ -2,8 +2,8 @@
 /**
  * Popup Count each category Trained
  */
-const PopupCategoryTrained = async () => {
-  const ui = await SpreadsheetApp.getUi();
+const PopupCategoryTrained = () => {
+  const ui = SpreadsheetApp.getUi();
   const counts = Calculate.CountEachCategoryTrained();
   ui.alert(
     SERVICE_NAME,
@@ -15,8 +15,8 @@ const PopupCategoryTrained = async () => {
 /**
  * Popup Count each category Trained
  */
-const PopupCountAllTrainedUsers = async () => {
-  const ui = await SpreadsheetApp.getUi();
+const PopupCountAllTrainedUsers = () => {
+  const ui = SpreadsheetApp.getUi();
   const counts = Calculate.CountAllTrainedUsers();
   const absent = Calculate.CountAbsent();
   const present = Calculate.CountPresent();
@@ -33,7 +33,7 @@ const PopupCountAllTrainedUsers = async () => {
  * Popup Generate Random Fact
  */
 const PopupRandomFact = async () => {
-  const ui = await SpreadsheetApp.getUi();
+  const ui = SpreadsheetApp.getUi();
   const fact = await RandomFacts.UselessFact();
   ui.alert(
     SERVICE_NAME,
@@ -46,7 +46,7 @@ const PopupRandomFact = async () => {
  * Popup Generate Fuckoff as a service
  */
 const PopupFOff = async () => {
-  const ui = await SpreadsheetApp.getUi();
+  const ui = SpreadsheetApp.getUi();
   const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom()
   ui.alert(
     `${SERVICE_NAME}`,
@@ -104,7 +104,7 @@ const PopupHelp = () => {
  * Popup Delete Old Emails
  */
 const PopupCleanOutJPSNotifications = async () => {
-  const ui = await SpreadsheetApp.getUi();
+  const ui = SpreadsheetApp.getUi();
   const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
   const response = ui.alert(
     `${SERVICE_NAME}`,

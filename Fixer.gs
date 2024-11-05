@@ -4,15 +4,14 @@
  * @param {string} fucked up list
  * @returns {[string]} repaired array.
  */
-const ParseStudents = (list) => {
+const ParseStudents = (list = []) => {
   if (typeof list !== `string`) list = list.toString();
   // console.error(`DOGSHIT: ${list}`)
 
   let l = list
     .replace(/\s+/g, '')
     .split(`Removeattendee`)
-  let r = [];
-  [...l].forEach(x => r.push(x.split(/(?=[A-Z])/)));
+  let r = [...l.map(x => x.split(/(?=[A-Z])/))];
 
   let g = [r[0]];
   for (let i = 0; i < r.length - 1; i++) {
@@ -37,7 +36,7 @@ const ParseStudents = (list) => {
 
 /**
  * 
- *
+ */
 const _testListFixer = () => {
   // let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
   // ParseStudents(list);
@@ -46,7 +45,7 @@ const _testListFixer = () => {
   ParseStudents(list2);
 
 }
-*/
+
 
 
 
