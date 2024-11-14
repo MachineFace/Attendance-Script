@@ -6,6 +6,9 @@
 const SERVICE_NAME = `🦤 AttendanceBot`;
 const DELETE_AFTER_DAYS = 90;
 
+/** @private */
+const THIS_SPREADSHEET = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty(`SPREADSHEET_ID`));
+
 /**
  * Colors
  */
@@ -141,21 +144,21 @@ const HEADERNAMES = Object.freeze({
  * Sheets
  */
 const SHEETS = Object.freeze({
-  Main : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main'), 
+  Main : THIS_SPREADSHEET.getSheetByName('Main'), 
 });
 
 /**
  * Other Sheets
  */
 const OTHERSHEETS = Object.freeze({
-  Metrics : SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Data / Metrics'),
-  Chart : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart1`),
-  Chart2 : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Chart2`),
-  HaasUsage : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Haas Usage`),
-  Logger : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Logger`),
-  Everyone : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`Every Trainee`),
-  CountsPerMonth : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerMonth`),
-  CountsPerWeek : SpreadsheetApp.getActiveSpreadsheet().getSheetByName(`CountsPerWeek`),
+  Metrics :        THIS_SPREADSHEET.getSheetByName('Data / Metrics'),
+  Chart :          THIS_SPREADSHEET.getSheetByName(`Chart1`),
+  Chart2 :         THIS_SPREADSHEET.getSheetByName(`Chart2`),
+  HaasUsage :      THIS_SPREADSHEET.getSheetByName(`Haas Usage`),
+  Logger :         THIS_SPREADSHEET.getSheetByName(`Logger`),
+  Everyone :       THIS_SPREADSHEET.getSheetByName(`Every Trainee`),
+  CountsPerMonth : THIS_SPREADSHEET.getSheetByName(`CountsPerMonth`),
+  CountsPerWeek :  THIS_SPREADSHEET.getSheetByName(`CountsPerWeek`),
 });
 
 /**
