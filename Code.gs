@@ -30,16 +30,16 @@ const OnChange = async (e) => {
   // Parse Row
   const { date, equipment, name, present, online, bCourses, absent, random, row } = SheetService.GetRowData(SHEETS.Main, thisRow);
   
-  // Set Date
-  // name && !date ? SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.date, thisRow, new Date().toLocaleDateString()) : null;
-
   // Add a Random Fact
   if(name && present && online && bCourses && !absent) {
     console.info(`Setting Random Fact....`);
     SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await RandomFacts.UselessFact());
   } else if(name && absent) {
     // console.info(`Skipping FuckOff....`);
-    // SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.online, thisRow, false);
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.present, thisRow, false);
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.bCourses, thisRow, false);
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
   } else {
     SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
   }
