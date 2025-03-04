@@ -78,7 +78,7 @@ class FuckOffAsAService {
     try {
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode !== 200) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (responseCode !== 200 && responseCode !== 201) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
       const content = response.getContentText();
       const parsed = this._Parse(content).title;
       console.info(parsed);
@@ -118,10 +118,10 @@ const DoFuckOff = async () => {
   const names = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.name);
   const absentIndexes = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.absent);
   for(let i = 0; i < absentIndexes.length; i++) {
-    console.info(`Index: ${i + 2}, Item: ${absentIndexes[i]}`);
+    // console.info(`Index: ${i + 2}, Item: ${absentIndexes[i]}`);
     if(absentIndexes[i] == true) {
       const fuckoff = await new FuckOffAsAService({ name : names[i] }).GetRandom();
-      SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, i + 2, fuckoff);
+      // SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.fuckOff, i + 2, fuckoff);
     }
   }
 }

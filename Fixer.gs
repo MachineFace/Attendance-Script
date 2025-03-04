@@ -8,27 +8,26 @@ const ParseStudents = (list = []) => {
   if (typeof list !== `string`) list = list.toString();
   // console.error(`DOGSHIT: ${list}`)
 
-  let l = list
-    .replace(/\s+/g, '')
-    .split(`Removeattendee`)
-  let r = [...l.map(x => x.split(/(?=[A-Z])/))];
+  // Clean and split the input
+  const clusters = list
+    .replace(/\s+/g, '') // Remove whitespace
+    .split('Removeattendee') // Split by "Removeattendee"
+    .map(cluster => cluster.split(/(?=[A-Z])/)); // Split names within each cluster
 
-  let g = [r[0]];
-  for (let i = 0; i < r.length - 1; i++) {
-    let firstgroup = r[i];
-    let next = r[i + 1];
-    let n = [];
-    next.forEach(name => {
-      if(firstgroup.indexOf(name) == -1) {
-        n.push(name);
-      }
-    });
-    g.push(n);
-  }
-  let merged = [];
-  g.forEach(cluster => merged.push(cluster.join(` `)));
-  console.warn(merged);
-  return merged;
+  // Deduplicate and reconstruct groups
+  const repairedGroups = clusters.reduce((result, current, i) => {
+    if (i === 0) {
+      result.push(current); // Add the first group
+    } else {
+      // Add only names not already in previous groups
+      const previous = result.flat();
+      result.push(current.filter(name => !previous.includes(name)));
+    }
+    return result;
+  }, []);
+
+  // Merge groups into strings
+  return repairedGroups.map(group => group.join(' '));
 }
 
 
@@ -38,12 +37,13 @@ const ParseStudents = (list = []) => {
  * 
  */
 const _testListFixer = () => {
-  // let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
-  // ParseStudents(list);
+  let list = `Andrew Wang Remove attendee Andrew WangJustin Wang Remove attendee Justin WangThanh Tran Remove attendee Thanh TranConstance Angelopoulos Remove attendee Constance AngelopoulosSiheng Yang Remove attendee Siheng YangMark Theis Remove attendee Mark TheisFranky Ohlinger Remove attendee Franky OhlingerCurtis Hu `;
+  let x = ParseStudents(list);
+  console.info(x);
 
   let list2 = `Issam Bourai Remove attendee Issam BouraiLydia Moog Remove attendee Lydia MoogJoshua Michael Duarte Remove attendee Joshua Michael DuarteDerek Shah Remove attendee Derek ShahJohn Jacobs Remove attendee John JacobsJohn Roberts Remove attendee John RobertsNoah Johnson Remove attendee Noah JohnsonFlorian Kristof Remove attendee Florian KristofParth Behani`;
-  ParseStudents(list2);
-
+  x = ParseStudents(list2);
+  console.info(x);
 }
 
 

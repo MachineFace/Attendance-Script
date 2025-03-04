@@ -39,9 +39,10 @@ const OnChange = async (e) => {
     SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.online, thisRow, false);
     SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.present, thisRow, false);
     SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.bCourses, thisRow, false);
-    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    // SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await new FuckOffAsAService({ name : name }).GetRandom());
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await ExcuseAndAdviceService.Excuse());
   } else {
-    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, undefined);
+    SheetService.SetByHeader(SHEETS.Main, HEADERNAMES.random, thisRow, await ExcuseAndAdviceService.Advice());
   }
 
   

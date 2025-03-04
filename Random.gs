@@ -23,7 +23,7 @@ class RandomFacts {
     try {
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (responseCode !== 200 && responseCode !== 201) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
       const content = JSON.parse(response.getContentText())["text"];
       console.info(content);
       return content;
@@ -101,7 +101,7 @@ class RandomFacts {
 }
 
 const _testUselessFact = async () => {
-  await RandomFacts.ShowMeTheMoney(10);
+  await RandomFacts.ShowMeTheMoney(100);
 }
 
 
