@@ -165,7 +165,7 @@ class TimeService {
       console.error(`"Duration()" failed : ${err}`);
       return 1;
     }
-  };
+  }
 
   /**
    * Calculate the Return Date
@@ -310,7 +310,7 @@ class TimeService {
 const isValidDate = (d) => {
   if (Object.prototype.toString.call(d) !== "[object Date]") return false;
   return !isNaN(d.getTime());
-};
+}
 
 /**
  * Convert Datetime to Date

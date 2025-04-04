@@ -78,7 +78,7 @@ class SudokuSolver {
 
   FindAllSolutions () {
     let original = this.board;
-    let solutions = {};
+    let solutions = {}
     solutions.push(this.Solve(original));
     
   }

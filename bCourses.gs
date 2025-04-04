@@ -23,7 +23,7 @@ class BCourses {
 
   async TestPOST() {
     try {
-      let payload = {};
+      let payload = {}
 
       // Stuff payload into postParams
       let params = {
@@ -33,7 +33,7 @@ class BCourses {
         payload : payload,
         followRedirects : true,
         muteHttpExceptions : true,
-      };
+      }
 
       // POST
       const response = await UrlFetchApp.fetch(this.root + repo, params);
@@ -63,7 +63,7 @@ class BCourses {
         contentType : "application/json",
         muteHttpExceptions : true,
         followRedirects : true,
-      };
+      }
 
       const response = await UrlFetchApp.fetch(this.root + repo, params);
       const responseCode = response.getResponseCode();
@@ -89,7 +89,7 @@ class BCourses {
         contentType : "application/json+canvas-string-ids",
         muteHttpExceptions : true,
         followRedirects : true,
-      };
+      }
       Sleep(50); // Wait a sec....
       const response = await UrlFetchApp.fetch(this.root + repo, params);
       const responseCode = response.getResponseCode();
@@ -154,7 +154,7 @@ class BCourses {
         contentType : "application/json",
         muteHttpExceptions : true,
         followRedirects : true,        
-      };
+      }
 
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
@@ -187,10 +187,10 @@ class BCourses {
     }
     const nextPattern = /(?<=<)([\S]*)(?=>; rel="Next")/i;
     let pagesRemaining = true;
-    let data = {};
+    let data = {}
     try {
       while (pagesRemaining) {
-        let newData = {};
+        let newData = {}
         const response = await UrlFetchApp.fetch(url, params);
         const responseCode = response.getResponseCode();
         if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
@@ -204,7 +204,7 @@ class BCourses {
           newData[key] = parsedData[key];
         }
 
-        data = {...data, ...newData};
+        data = {...data, ...newData}
         const linkHeader = headers['Link'];
 
         pagesRemaining = linkHeader && linkHeader.includes(`rel=\"next\"`);
@@ -575,7 +575,7 @@ class BCourses {
         payload: { 
           task : task, 
         },     
-      };
+      }
       const request = await this.GetData(endpoint, params);
       console.info(`UnenrollUser(${enrollment_id}) response`, request);
       return request;
@@ -650,7 +650,7 @@ class BCourses {
             posted_grade : newgrade 
           },
         },
-      };
+      }
 
       const response = await this.GetData(Config.ROOT + endpoint, params);
       if (Object.keys(response).length == 0) throw new Error(`Unable to grade ID: ${userid} for assignment: ${assignment}, grade: ${newgrade}`);

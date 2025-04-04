@@ -19,7 +19,7 @@ class RandomFacts {
       contentType : "application/json",
       followRedirects : true,
       muteHttpExceptions : true
-    };
+    }
     try {
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();

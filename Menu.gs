@@ -10,7 +10,7 @@ const PopupCategoryTrained = () => {
     `${JSON.stringify(counts, null, 3)}`,
     ui.ButtonSet.OK
   );
-};
+}
 
 /**
  * Popup Count each category Trained
@@ -27,7 +27,7 @@ const PopupCountAllTrainedUsers = () => {
     `Present ----> ${present}\n`,
     ui.ButtonSet.OK
   );
-};
+}
 
 /**
  * Popup Generate Random Fact
@@ -40,7 +40,7 @@ const PopupRandomFact = async () => {
     `${fact}`,
     ui.ButtonSet.OK
   );
-};
+}
 
 /**
  * Popup Generate Fuckoff as a service
@@ -53,7 +53,7 @@ const PopupFOff = async () => {
     `${fOff}`,
     ui.ButtonSet.OK
   );
-};
+}
 
 
 
@@ -86,7 +86,7 @@ const BuildHTMLHELP = () => {
   html += "<p>See Cody or Chris for additional help + protips.</p>";
   console.info(html);
   return html;
-};
+}
 
 /**
  * Creates a modal pop-up for the help text.
@@ -98,7 +98,7 @@ const PopupHelp = () => {
     .setWidth(640)
     .setHeight(480);
   ui.showModalDialog(htmlOutput, title);
-};
+}
 
 /**
  * Popup Delete Old Emails
@@ -154,7 +154,7 @@ const BarMenu = () => {
     .addItem(`Help`, `PopupHelp`)
     .addSeparator()
     .addToUi();
-};
+}
 
 
 

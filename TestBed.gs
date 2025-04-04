@@ -90,7 +90,7 @@ const _getWeekNumber = (d) => {
 /** @private */
 const _fillMissingWeeks = (dates) => {
   // Create a map to store weeks for each year
-  const weeksMap = {};
+  const weeksMap = {}
 
   // Parse input dates and fill the map
   Object.entries(dates).forEach(([date, value], idx) => {

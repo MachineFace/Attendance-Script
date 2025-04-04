@@ -30,7 +30,7 @@ const GetObjectType = (ob) => {
         name : ob.constructor ? ob.constructor.name : null,
         nargs : ob.constructor ? ob.constructor.arity : null,
         length : Array.isArray(ob) ? ob.length:null
-      };       
+      }       
     }
   }
   catch (err) {

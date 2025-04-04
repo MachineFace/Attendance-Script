@@ -161,7 +161,7 @@ class Calculate {
         Online : 0,
         Entered : 0,
         Absent : 0,
-      };
+      }
 
       const data = SHEETS.Main.getDataRange().getValues();
       data.forEach(entry => {
