@@ -23,10 +23,12 @@ class TrelloService {
     // `curl 'https://api.trello.com/1'`
     const repo = `${this.root}/boards/b3XlrJtj?key=${this.key}&token=${this.secret}`;
     const params = {
-      method : "GET",
-      headers : { "Authorization" : "Basic " + Utilities.base64EncodeWebSafe(this.key + ":" + this.secret)},
-      contentType : "application/json",
-      muteHttpExceptions : true,
+      'method' : "GET",
+      'headers' : { 
+        'ContentType' : "application/json",
+        "Authorization" : "Basic " + Utilities.base64EncodeWebSafe(this.key + ":" + this.secret)
+      },
+      'muteHttpExceptions' : true,
     }
 
     try {
