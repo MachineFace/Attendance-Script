@@ -78,7 +78,9 @@ class FuckOffAsAService {
     try {
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode !== 200 && responseCode !== 201) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
       const content = response.getContentText();
       const parsed = this._Parse(content).title;
       console.info(parsed);

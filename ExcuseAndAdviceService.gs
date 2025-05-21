@@ -15,7 +15,9 @@ class ExcuseAndAdviceService {
       const url = `https://excuser-three.vercel.app/v1/excuse`;
       const response = await UrlFetchApp.fetch(url, ExcuseAndAdviceService.get_params());
       const responseCode = response.getResponseCode();
-      if(responseCode != 200) throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      if(![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);
+      }
       const content = await JSON.parse(response.getContentText())[0].excuse;
       console.info(content);
       return content;
@@ -33,7 +35,9 @@ class ExcuseAndAdviceService {
       const url = `https://api.adviceslip.com/advice`;
       const response = await UrlFetchApp.fetch(url, ExcuseAndAdviceService.get_params());
       const responseCode = response.getResponseCode();
-      if(responseCode != 200) throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      if(![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      }
       const content = await JSON.parse(response.getContentText()).slip.advice;
       console.info(content);
       return content;
@@ -51,7 +55,9 @@ class ExcuseAndAdviceService {
       const url = `https://quotesondesign.com/wp-json/wp/v2/posts/?orderby=rand`;
       const response = await UrlFetchApp.fetch(url, ExcuseAndAdviceService.get_params());
       const responseCode = response.getResponseCode();
-      if(responseCode != 200) throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      if(![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      }
       const content = await JSON.parse(response.getContentText())[0];
       const title = content.title.rendered;
       const quote = content.content.rendered;
@@ -73,7 +79,9 @@ class ExcuseAndAdviceService {
       const site = `https://api.shrtco.de/v2/shorten?url=${url}`;
       const response = await UrlFetchApp.fetch(site, ExcuseAndAdviceService.post_params());
       const responseCode = response.getResponseCode();
-      if(responseCode != 200 && responseCode != 201) throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      if(![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode}: ${RESPONSECODES[responseCode]}`);  
+      }
       const content = await JSON.parse(response.getContentText()).result?.full_short_link;
       console.info(content);
       return content;

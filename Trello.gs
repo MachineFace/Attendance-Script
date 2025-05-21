@@ -34,7 +34,9 @@ class TrelloService {
     try {
       const response = await UrlFetchApp.fetch(this.root + repo, params);
       const responseCode = response.getResponseCode();
-      if (responseCode !== 200 && responseCode !== 201) throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server : ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
       const content = response.getContentText();
       // console.info(response.getAllHeaders())
       console.info(HtmlService.createHtmlOutput(content).getContent());

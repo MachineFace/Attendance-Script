@@ -9,38 +9,92 @@
  * https://github.com/ucfopen/canvasapi
  * https://github.com/bennettscience/canvas-lms-mastery-helper
  */
-class BCourses {
+class BCoursesService {
   constructor() {
-    this.token = `1072~bXyBuND4sPQniJVJYHRxVOP4gCMrhpUq0BMEVExytR1g4Kaznlm6cGzR5gk872AU`;
-    this.root = `https://bcourses.berkeley.edu/api/v1`;
     /** @private */
-    this.course = `/courses/1353091`;
+    this.token = PropertiesService.getScriptProperties().getProperty(`BCOURSES_TEMP_TOKEN`); // `1072~bXyBuND4sPQniJVJYHRxVOP4gCMrhpUq0BMEVExytR1g4Kaznlm6cGzR5gk872AU`;
     /** @private */
-    this.id = '5508592';
+    this.root = PropertiesService.getScriptProperties().getProperty(`BCOURSES_ROOT`);
+    /** @private */
+    this.course = PropertiesService.getScriptProperties().getProperty(`BCOURSES_COURSE`);
+    /** @private */
+    this.id = PropertiesService.getScriptProperties().getProperty(`BCOURSES_ID`);
+    /** @private */
+    this.clientID = PropertiesService.getScriptProperties().getProperty(`BCOURSES_USER`);
+    /** @private */
+    this.clientSecret = PropertiesService.getScriptProperties().getProperty(`BCOURSES_PASS`);
+    /** @private */
+    this.redirect_uri = ScriptApp.getService().getUrl();
     /** @private */
     this.name = `Chris Parsell`;
   }
 
+  /**
+   * Configure the service
+   */
+  CreateService() {
+    try {
+      const service = OAuth2.createService(`BCoursesService`)
+        .setAuthorizationBaseUrl(this.root)
+        .setTokenUrl(`https://accounts.spotify.com/api/token`)
+        .setClientId(this.clientID)
+        .setClientSecret(this.clientSecret)
+        .setPropertyStore(PropertiesService.getUserProperties())
+        .setCache(CacheService.getUserCache())
+        .setLock(LockService.getUserLock())
+        .setScope(this.scope)
+        .setTokenHeaders({
+          "Authorization": 'Basic ' + Utilities.base64Encode(this.clientID + ':' + this.clientSecret)
+        })
+        .setCallbackFunction(`OAuth2Callback`)
+        
+      if (!service.hasAccess()) {
+        const auth_url = this.GenerateAuthUrl();
+        // throw new Error('Error: Missing Spotify authorization.');
+      }
+      // console.info(service);
+      console.info(`Service Access: ${service.hasAccess()}`);
+      this.service = service;
+      return service;
+    } catch(err) {
+      console.error(`"CreateService()" failed: ${err.message}`);
+      return 1;
+    }
+  }
+
+  /**
+   * Generate URL for requesting authorization
+   * @private
+   */
+  GenerateAuthUrl() {
+    const params = `?response_type=code&client_id=${this.clientID}&scope=${this.scope}&redirect_uri=${this.redirect_uri}`;
+    const authURL = this.authUrl + encodeURI(params);
+    console.warn(authURL);
+    return authURL;
+  }
+
+  // -----------------------------------------------------------------
+
   async TestPOST() {
     try {
-      let payload = {}
-
-      // Stuff payload into postParams
-      let params = {
-        method : "POST",
-        headers : { "Authorization": "Bearer " + Utilities.base64EncodeWebSafe(this.token) },
-        contentType : "application/json",
-        payload : payload,
-        followRedirects : true,
-        muteHttpExceptions : true,
+      const params = {
+        "method" : "POST",
+        "content-Type" : "application/json",
+        "headers" : { 
+          "Authorization": "Bearer " + Utilities.base64EncodeWebSafe(this.token) 
+        },
+        "payload" : {},
+        "followRedirects" : true,
+        "muteHttpExceptions" : true,
       }
 
-      // POST
       const response = await UrlFetchApp.fetch(this.root + repo, params);
       const responseCode = response.getResponseCode();
-      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
 
-      console.info(`Response ---> : ${JSON.stringify(response, null, 3)}`);
+      console.info(`Response:\n${JSON.stringify(response, null, 3)}`);
 
       return {
         responseCode : response.getResponseCode(),
@@ -55,19 +109,22 @@ class BCourses {
 
   async TestGET() {
     try {
-      const repo = "/courses/1353091/"
-
+      const url = `${this.root}${this.course}`;
       const params = {
-        method : "GET",
-        headers : { "Authorization" : "Bearer " +  this.token},
-        contentType : "application/json",
-        muteHttpExceptions : true,
-        followRedirects : true,
+        "method" : "GET",
+        "content-Type" : "application/json",
+        "headers" : { 
+          "Authorization": "Bearer " + Utilities.base64EncodeWebSafe(this.token),
+        },
+        "muteHttpExceptions" : true,
+        "followRedirects" : true,
       }
 
-      const response = await UrlFetchApp.fetch(this.root + repo, params);
+      const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
 
       const res = JSON.parse(response.getContentText());
       console.info(JSON.stringify(res, null, 3));
@@ -81,19 +138,24 @@ class BCourses {
 
   async GetUsers(pageNumber = 1,) {
     try {
-      const repo = "/courses/1353091" + `/users` + `?page=${pageNumber}` + `&per_page=100`;
-
+      const url = `${this.root}${this.course}/users?page=${pageNumber}&per_page=100`;
       const params = {
-        method : "GET",
-        headers : { "Authorization" : "Bearer " +  this.token},
-        contentType : "application/json+canvas-string-ids",
-        muteHttpExceptions : true,
-        followRedirects : true,
+        "method" : "GET",
+        "content-Type" : "application/json+canvas-string-ids",
+        "headers" : { 
+          "Authorization": "Bearer " + Utilities.base64EncodeWebSafe(this.token),
+        },
+        "muteHttpExceptions" : true,
+        "followRedirects" : true,
       }
+
       Sleep(50); // Wait a sec....
-      const response = await UrlFetchApp.fetch(this.root + repo, params);
+
+      const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
 
       const res = JSON.parse(response.getContentText());
       return res;
@@ -158,7 +220,9 @@ class BCourses {
 
       const response = await UrlFetchApp.fetch(url, params);
       const responseCode = response.getResponseCode();
-      if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      if (![200, 201].includes(responseCode)) {
+        throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+      }
 
       const content = response.getContentText();
       console.info(JSON.stringify(content, null, 3));      
@@ -193,7 +257,9 @@ class BCourses {
         let newData = {}
         const response = await UrlFetchApp.fetch(url, params);
         const responseCode = response.getResponseCode();
-        if (responseCode != 200) throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+        if (![200, 201].includes(responseCode)) {
+          throw new Error(`Bad response from server: ${responseCode} ---> ${RESPONSECODES[responseCode]}`);
+        }
 
         let headers = response.getHeaders();
         let content = response.getContentText();
@@ -734,7 +800,11 @@ const _testbCourses = () => {
 }
 */
 
-
+const _testBcourses = () => {
+  const b = new BCoursesService();
+  // b.TestGET();
+  b.GenerateAuthUrl();
+}
 
 
 
