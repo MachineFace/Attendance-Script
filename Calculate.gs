@@ -18,12 +18,11 @@ class Calculate {
    */
   static CountCategories() {
     try {
-      let categories = [];
-      [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment)]
-        .filter(Boolean)
-        .forEach(type => {
-          if(Object.values(TYPES).includes(type)) categories.push(type);
-        });
+      const rawData = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.equipment) || [];
+      const validTypes = new Set(Object.values(TYPES));
+      
+      const categories = rawData
+        .filter(type => type && validTypes.has(type));
       
       let occurrences = StatisticsService.Distribution(categories);
       return occurrences; 
@@ -35,46 +34,36 @@ class Calculate {
 
   /**
    * Count Per Month
+   * @returns {[string, number][]} sorted month-year counts
    */
   static CountPerMonth() {
     try {
-      let dates = [];
-      [...SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date)]
+      const rawData = SheetService.GetColumnDataByHeader(SHEETS.Main, HEADERNAMES.date) || [];
+      const dates = rawData
         .filter(Boolean)
-        .forEach(date => {
-          let d = new Date(date);
-          let monthYear = `${d.getFullYear()}-${d.getMonth() + 1}`; // Format as "YYYY-M"
-          dates.push(monthYear);
-        });
+        .map(date => {
+          const d = new Date(date);
+          return isNaN(d) ? null : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        })
+        .filter(Boolean);
 
       let occurrences = StatisticsService.Distribution(dates);
+      const filledCounts = new Map(occurrences); // Convert to Map for easy lookup
+      const years = new Set(dates.map(d => d.split('-')[0]));
 
-      let filledDateCounts = occurrences;
-      let years = new Set();
-
-      // Extract unique years from the dates
-      occurrences.forEach(([date, count], idx) => {
-        const year = date && date.split("-")[0] || new Date().getFullYear();
-        years.add(year);
-      });
-
-      // Generate all months for each year and add to the dateCounts object if missing
+      // Ensure all months exist for each year
       years.forEach(year => {
         for (let month = 1; month <= 12; month++) {
-          const monthYear = `${year}-${month}`;
-          const data = [ monthYear, 0 ];
-          let dates = filledDateCounts.map(x => x[0]);
-          if (!dates.includes(monthYear)) {
-            filledDateCounts.push([ monthYear, 0 ]);
+          const key = `${year}-${String(month).padStart(2, '0')}`;
+          if (!filledCounts.has(key)) {
+            filledCounts.set(key, 0);
           }
         }
       });
 
-      const sorted = filledDateCounts
-        .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-
-      console.info(sorted);
-      return sorted;
+      // Return sorted array of [monthYear, count]
+      return [...filledCounts.entries()]
+        .sort(([a], [b]) => new Date(a) - new Date(b));
     } catch(err) {
       console.error(`"CountPerMonth()" failed : ${err}`);
       return 1;
@@ -165,7 +154,7 @@ class Calculate {
 
       const data = SHEETS.Main.getDataRange().getValues();
       data.forEach(entry => {
-        const[ date, equipment, name, present, online, entered, absent, _, random, ] = entry;
+        const [ date, equipment, name, present, online, entered, absent, _, random, ] = entry;
         if(present && online && !absent) attendance.Present += 1;
         else if(present && online && entered && !absent) attendance.Present += 1;
         else if(online) attendance.Online += 1;
@@ -371,6 +360,7 @@ class Calculate {
  * @TRIGGERED - Once a day
  */
 const Metrics = () => {
+  console.time(`Metrics Timer`);
   Calculate.PrintTypes();
   Calculate.PrintAttendance();
   Calculate.CountAllTrainedUsers();
@@ -380,10 +370,15 @@ const Metrics = () => {
   Calculate.PrintCountsPerMonth();
   Calculate.CountRecurringUsers();
   Calculate.CountUniqueStudents();
+  PrintCountsPerWeek();
+  console.timeEnd(`Metrics Timer`);
 }
 
 const _testMetrics = () => {
-  Calculate.PrintTypes();
+  console.time(`TestX`);
+  const x = Calculate.CountPerMonth();
+  console.info(x);
+  console.timeEnd(`TestX`);
 }
 
 
