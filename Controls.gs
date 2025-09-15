@@ -2,16 +2,13 @@
  * ------------------------------------------------------------------------------------------------
  * Conrolls
  */
-
-
-
-const SetPurgeTrigger = () => ScriptApp.newTrigger(`CleanOutJPSNotifications`).timeBased().everyDays(1).create();
-const SetPurgeMoreTrigger = () => ScriptApp.newTrigger('purgeMore').timeBased().at(new Date(new Date().getTime() + 1000 * 60 * 2)).create();
+// const SetPurgeTrigger = () => ScriptApp.newTrigger(`CleanOutJPSNotifications`).timeBased().everyDays(1).create();
+// const SetPurgeMoreTrigger = () => ScriptApp.newTrigger('purgeMore').timeBased().at(new Date(new Date().getTime() + 1000 * 60 * 2)).create();
 
 /**
  * Clean Out Old JPS Notifications
- * @TRIGGERED Daily
- */
+ * @DEFUNCT
+ *
 const CleanOutJPSNotifications = () => {
   let cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - DELETE_AFTER_DAYS);
@@ -42,6 +39,7 @@ const CleanOutJPSNotifications = () => {
     console.warn(`Emails Cleaned Out.`);
   }
 }
+*/
 
 /**
  * Set the Conditional Formatting for each page

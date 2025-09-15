@@ -213,10 +213,10 @@ const _gasTEmailerTesting = async () => {
     t.notThrow(() => x, `ListInboxSnippets SHOULD NOT throw error: ${x}`);
   });
 
-  await test(`CleanOutJPSNotifications`, (t) => {
-    const x = CleanOutJPSNotifications();
-    t.notThrow(() => x, `CleanOutJPSNotifications SHOULD NOT throw error: ${x}`);
-  });
+  // await test(`CleanOutJPSNotifications`, (t) => {
+  //   const x = CleanOutJPSNotifications();
+  //   t.notThrow(() => x, `CleanOutJPSNotifications SHOULD NOT throw error: ${x}`);
+  // });
 
   await test.finish();
   if (test.totalFailed() > 0) throw "Some test(s) failed!";

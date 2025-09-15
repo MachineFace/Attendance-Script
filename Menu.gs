@@ -102,7 +102,7 @@ const PopupHelp = () => {
 
 /**
  * Popup Delete Old Emails
- */
+ *
 const PopupCleanOutJPSNotifications = async () => {
   const ui = SpreadsheetApp.getUi();
   const fOff = await new FuckOffAsAService({name : `Cody`}).GetRandom(); 
@@ -123,7 +123,7 @@ const PopupCleanOutJPSNotifications = async () => {
     console.warn(`User cancelled.`);
   }
 }
-
+*/
 
 
 /**
@@ -149,7 +149,7 @@ const BarMenu = () => {
         .addItem(`Fuck Off`, `PopupFOff`)
     )
     .addSeparator()
-    .addItem(`Delete Old Emails`, `PopupCleanOutJPSNotifications`)
+    // .addItem(`Delete Old Emails`, `PopupCleanOutJPSNotifications`)
     .addSeparator()
     .addItem(`Help`, `PopupHelp`)
     .addSeparator()
